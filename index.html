@@ -98,7 +98,7 @@
                         class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
                         placeholder="Enter your message here..."></textarea>
 
-                    <!-- New Image URL Input -->
+                    <!-- Image URL Input -->
                     <div id="image-url-container" class="mt-4">
                         <label for="image-url"
                             class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Optional: Image URL
@@ -213,7 +213,7 @@
 
     <script>
         // --- CONFIGURATION ---
-        const API_ENDPOINT = 'https://my-bulk-messaging-server.onrender.com/send';
+        const API_ENDPOINT = 'https://my-bulk-messaging-server.onrender.com/send'; // Your actual Render URL
         const PRICING = {
             sms: 0.50,
             whatsapp: 0.45,
@@ -229,8 +229,8 @@
         const DOMElements = {
             channelSelect: document.getElementById('channel'),
             messageTextarea: document.getElementById('message'),
-            imageUrlInput: document.getElementById('image-url'), // New
-            imageUrlContainer: document.getElementById('image-url-container'), // New
+            imageUrlInput: document.getElementById('image-url'),
+            imageUrlContainer: document.getElementById('image-url-container'),
             csvFileInput: document.getElementById('csvFile'),
             manualNumbersTextarea: document.getElementById('manual-numbers'),
             sendButton: document.getElementById('send-button'),
@@ -275,7 +275,7 @@
             setupEventListeners();
             initializeTheme();
             populateChannelSelect();
-            toggleImageInputVisibility(); // Initial check
+            toggleImageInputVisibility();
         }
 
         function populateChannelSelect() {
@@ -296,19 +296,14 @@
                 el.addEventListener('input', updateCostEstimator);
                 el.addEventListener('change', updateCostEstimator);
             });
-            DOMElements.channelSelect.addEventListener('change', toggleImageInputVisibility); // Toggle on change
+            DOMElements.channelSelect.addEventListener('change', toggleImageInputVisibility);
             DOMElements.tabLogs.addEventListener('click', () => switchTab('logs'));
             DOMElements.tabFailures.addEventListener('click', () => switchTab('failures'));
         }
 
-        // --- NEW: Toggle Image URL input based on channel ---
         function toggleImageInputVisibility() {
             const selectedChannel = DOMElements.channelSelect.value;
-            if (selectedChannel === 'sms' || selectedChannel === 'whatsapp') {
-                DOMElements.imageUrlContainer.style.display = 'block';
-            } else {
-                DOMElements.imageUrlContainer.style.display = 'none';
-            }
+            DOMElements.imageUrlContainer.style.display = (selectedChannel === 'sms' || selectedChannel === 'whatsapp') ? 'block' : 'none';
         }
 
         // --- Core Campaign Logic ---
@@ -337,18 +332,21 @@
 
         async function sendNextMessage() {
             if (campaign.currentIndex >= campaign.totalCount || campaign.state === 'stopped' || campaign.state === 'finished') {
-                finishCampaign(); return;
+                finishCampaign();
+                return;
             }
-            if (campaign.state === 'paused') return;
+            if (campaign.state === 'paused') {
+                return;
+            }
 
             const number = campaign.numbers[campaign.currentIndex];
             const channel = DOMElements.channelSelect.value;
             const message = DOMElements.messageTextarea.value;
-            const imageUrl = DOMElements.imageUrlInput.value.trim(); // Get image URL
+            const imageUrl = DOMElements.imageUrlInput.value.trim();
 
             try {
                 const payload = { channel, message, recipient: number };
-                if (imageUrl) {
+                if (imageUrl && (channel === 'sms' || channel === 'whatsapp')) {
                     payload.imageUrl = imageUrl;
                 }
 
@@ -367,13 +365,15 @@
                 addLog(`Failed: ${number} (${error.message})`, 'error');
                 campaign.failedNumbers.push(number);
                 updateFailuresTab();
+            } finally {
+                campaign.currentIndex++;
+                updateProgress();
+
+                if (campaign.state === 'running') {
+                    const delay = parseInt(DOMElements.delaySlider.value, 10);
+                    campaign.timeoutId = setTimeout(sendNextMessage, delay);
+                }
             }
-
-            campaign.currentIndex++;
-            updateProgress();
-
-            const delay = parseInt(DOMElements.delaySlider.value, 10);
-            campaign.timeoutId = setTimeout(sendNextMessage, delay);
         }
 
         // --- Campaign Controls ---
