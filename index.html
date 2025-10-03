@@ -191,7 +191,8 @@
             for (const number of numbers) {
                 try {
                     // Replace with your DEPLOYED backend server URL in Phase 5
-                    const response = await fetch('http://localhost:3000/send', {
+                    // const response = await fetch('http://localhost:3000/send', {
+                    const response = await fetch('https://my-bulk-messaging-server.onrender.com/send', {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
