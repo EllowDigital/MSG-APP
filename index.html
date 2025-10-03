@@ -12,8 +12,9 @@
             font-family: 'Inter', sans-serif;
         }
 
+        /* A more subtle focus ring for accessibility */
         .focus-ring {
-            @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800;
+            @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900;
         }
 
         .shake {
@@ -43,16 +44,48 @@
                 transform: translate3d(4px, 0, 0);
             }
         }
+
+        /* Custom scrollbar for a cleaner look */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background-color: #a0aec0;
+            /* gray-400 */
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: content-box;
+        }
+
+        html.dark ::-webkit-scrollbar-thumb {
+            background-color: #4a5568;
+            /* gray-600 */
+        }
     </style>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
 
-    <div class="container mx-auto p-4 sm:p-6 md:p-8">
-        <header class="mb-8 flex justify-between items-center">
-            <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Advanced Messaging Dashboard</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">A powerful tool for your communication campaigns.</p>
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <header class="mb-8 pb-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+            <div class="flex items-center gap-3 sm:gap-4">
+                <div class="bg-indigo-100 dark:bg-indigo-900/50 p-3 rounded-lg">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                        class="h-6 w-6 sm:h-7 sm:w-7 text-indigo-600 dark:text-indigo-400" fill="none"
+                        viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M17 8h2a2 2 0 012 2v6a2 2 0 01-2 2h-2v4l-4-4H9a2 2 0 01-2-2V7a2 2 0 012-2h6l2-2h2l-2 2z" />
+                    </svg>
+                </div>
+                <div>
+                    <h1 class="text-2xl sm:text-3xl font-bold text-gray-900 dark:text-white">Messaging Dashboard</h1>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 mt-1">Launch your campaigns seamlessly.</p>
+                </div>
             </div>
             <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus-ring">
                 <svg id="theme-icon-light" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -66,139 +99,212 @@
             </button>
         </header>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
-            <div class="space-y-6">
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">1. Compose Campaign</h2>
-                    <div>
-                        <label for="channel"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Channel</label>
-                        <select id="channel"
-                            class="mt-1 w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"></select>
+            <div class="lg:col-span-2 space-y-8">
+                <div
+                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-3 mb-5">
+                        <span
+                            class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold">1</span>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Compose Campaign</h2>
                     </div>
-                    <div class="mt-4">
-                        <label for="message"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
-                        <textarea id="message" rows="4"
-                            class="mt-1 w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
-                            placeholder="Enter your message..."></textarea>
-                    </div>
-                    <div id="image-url-container" class="mt-4">
-                        <label for="image-url"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Optional Image
-                            URL</label>
-                        <input type="text" id="image-url"
-                            class="mt-1 w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
-                            placeholder="https://example.com/image.png">
+                    <div class="space-y-4">
+                        <div>
+                            <label for="channel"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">Channel</label>
+                            <select id="channel"
+                                class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"></select>
+                        </div>
+                        <div>
+                            <label for="message"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
+                            <textarea id="message" rows="4"
+                                class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="Enter your message..."></textarea>
+                        </div>
+                        <div id="image-url-container">
+                            <label for="image-url"
+                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">Optional Image
+                                URL</label>
+                            <input type="text" id="image-url"
+                                class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
+                                placeholder="https://example.com/image.png">
+                        </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">2. Add Contacts</h2>
+                <div
+                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-3 mb-5">
+                        <span
+                            class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold">2</span>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Add Contacts</h2>
+                    </div>
                     <div class="space-y-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Add Number
                                 Manually</label>
-                            <div class="mt-1 flex gap-2">
-                                <input type="text" id="country-code" value="+91"
-                                    class="w-1/4 p-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
-                                    placeholder="e.g., +91">
-                                <input type="tel" id="phone-number"
-                                    class="flex-grow p-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
-                                    placeholder="9876543210">
+                            <div class="mt-1 flex flex-col sm:flex-row gap-2">
+                                <div class="flex sm:flex-none gap-2">
+                                    <input type="text" id="country-code" value="+91"
+                                        class="w-20 p-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500"
+                                        placeholder="e.g., +91">
+                                    <input type="tel" id="phone-number"
+                                        class="flex-grow p-2 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500"
+                                        placeholder="9876543210">
+                                </div>
                                 <button id="add-number-btn"
-                                    class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus-ring">Add</button>
+                                    class="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus-ring flex items-center justify-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                        fill="currentColor">
+                                        <path fill-rule="evenodd"
+                                            d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z"
+                                            clip-rule="evenodd" />
+                                    </svg>
+                                    <span>Add</span>
+                                </button>
                             </div>
                             <p id="add-number-feedback" class="text-xs text-red-500 mt-1 h-4"></p>
                         </div>
-                        <div
-                            class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md text-center">
-                            <input type="file" id="csvFile" accept=".csv" class="hidden">
-                            <button onclick="document.getElementById('csvFile').click()"
-                                class="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition focus-ring">Upload
-                                CSV</button>
-                            <p id="file-info" class="text-sm text-gray-500 dark:text-gray-400 mt-2">Upload a CSV with a
-                                'phone' column.</p>
+
+                        <div class="relative w-full text-center">
+                            <div class="p-2 flex items-center">
+                                <span class="flex-grow bg-gray-200 dark:bg-gray-700 h-px"></span>
+                                <span class="mx-4 text-sm font-medium text-gray-500 dark:text-gray-400">OR</span>
+                                <span class="flex-grow bg-gray-200 dark:bg-gray-700 h-px"></span>
+                            </div>
                         </div>
-                        <div id="contacts-list-container" class="mt-4">
-                            <h3 class="font-medium text-gray-700 dark:text-gray-300">Contacts (<span
+
+                        <div id="csv-dropzone"
+                            class="relative p-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-center cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors"
+                            onclick="document.getElementById('csvFile').click()">
+                            <input type="file" id="csvFile" accept=".csv" class="hidden">
+                            <div class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                    class="h-10 w-10 mb-2 text-gray-400 dark:text-gray-500" fill="none"
+                                    viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12" />
+                                </svg>
+                                <p class="font-semibold text-indigo-600 dark:text-indigo-400">Click to upload or drag
+                                    and drop</p>
+                                <p id="file-info" class="text-sm mt-1">Upload a CSV with a 'phone' column.</p>
+                            </div>
+                        </div>
+
+                        <div id="contacts-list-container"
+                            class="mt-4 pt-4 border-t border-gray-200 dark:border-gray-700">
+                            <h3 class="font-medium text-gray-700 dark:text-gray-300">Contacts List (<span
                                     id="contact-count">0</span>)</h3>
                             <div id="contacts-list"
-                                class="mt-2 p-2 border dark:border-gray-600 rounded-md max-h-48 overflow-y-auto space-y-2">
+                                class="mt-2 p-2 border dark:border-gray-600 rounded-md max-h-48 overflow-y-auto space-y-2 bg-gray-50 dark:bg-gray-900/50">
                             </div>
                         </div>
                     </div>
                 </div>
 
-                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
-                    <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">3. Configure & Launch</h2>
+                <div
+                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-3 mb-5">
+                        <span
+                            class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold">3</span>
+                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Configure & Launch</h2>
+                    </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sending
                             Speed</label>
                         <div class="flex items-center gap-4">
-                            <span class="text-xs">Fast</span>
+                            <span class="text-xs font-medium text-green-600">Fast</span>
                             <input id="delay-slider" type="range" min="200" max="5000" value="1000"
                                 class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
-                            <span class="text-xs">Slow</span>
+                            <span class="text-xs font-medium text-red-500">Slow</span>
                         </div>
                         <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-1">Delay: <span
-                                id="delay-value">1.0</span>s per message</p>
+                                id="delay-value" class="font-semibold">1.0</span>s per message</p>
                     </div>
-                    <div id="cost-estimator" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-center">
+                    <div id="cost-estimator" class="mt-6 p-4 bg-indigo-50 dark:bg-gray-700/50 rounded-lg text-center">
                         <p class="font-medium">Estimated Cost: <span id="estimated-cost"
-                                class="text-indigo-600 dark:text-indigo-400 font-bold">₹0.00</span></p>
+                                class="text-indigo-600 dark:text-indigo-400 font-bold text-lg">₹0.00</span></p>
                         <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Based on standard India pricing. Media
                             messages may cost more.</p>
                     </div>
-                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="mt-6 space-y-3">
                         <button id="send-button"
-                            class="flex items-center justify-center w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed focus-ring col-span-1 sm:col-span-3">Start
-                            Campaign</button>
-                        <button id="pause-resume-button"
-                            class="flex items-center justify-center w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-md hover:bg-yellow-600 transition disabled:bg-yellow-300 disabled:cursor-not-allowed focus-ring"
-                            disabled>Pause</button>
-                        <button id="stop-button"
-                            class="flex items-center justify-center w-full bg-red-600 text-white font-bold py-3 px-4 rounded-md hover:bg-red-700 transition disabled:bg-red-300 disabled:cursor-not-allowed focus-ring col-span-1 sm:col-span-2"
-                            disabled>Stop</button>
+                            class="flex items-center justify-center w-full gap-2 bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed focus-ring">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                fill="currentColor">
+                                <path
+                                    d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z" />
+                            </svg>
+                            <span>Start Campaign</span>
+                        </button>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                            <button id="pause-resume-button"
+                                class="flex items-center justify-center w-full gap-2 bg-yellow-500 text-white font-bold py-3 px-4 rounded-md hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed focus-ring"
+                                disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM7 8a1 1 0 012 0v4a1 1 0 11-2 0V8zm5-1a1 1 0 00-1 1v4a1 1 0 102 0V8a1 1 0 00-1-1z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <span>Pause</span>
+                            </button>
+                            <button id="stop-button"
+                                class="flex items-center justify-center w-full gap-2 bg-red-600 text-white font-bold py-3 px-4 rounded-md hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed focus-ring"
+                                disabled>
+                                <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
+                                    fill="currentColor">
+                                    <path fill-rule="evenodd"
+                                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 001 1h4a1 1 0 001-1V8a1 1 0 00-1-1H8z"
+                                        clip-rule="evenodd" />
+                                </svg>
+                                <span>Stop</span>
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div id="status-container" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg h-fit">
+            <div id="status-container"
+                class="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 lg:sticky lg:top-8">
                 <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Live Campaign Status</h2>
                 <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
-                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <nav class="-mb-px flex space-x-4 sm:space-x-6" aria-label="Tabs">
                         <button id="tab-logs"
-                            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">Logs</button>
+                            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600 dark:text-indigo-400">Logs</button>
                         <button id="tab-failures"
-                            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200">Failures
-                            (<span id="failure-count">0</span>)</button>
+                            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200">
+                            Failures (<span id="failure-count">0</span>)
+                        </button>
                     </nav>
                 </div>
                 <div id="tab-content-logs">
                     <div class="space-y-3">
-                        <p><strong>Status:</strong> <span id="status-message" aria-live="polite">Idle. Configure a
-                                campaign to begin.</span></p>
+                        <p><strong>Status:</strong> <span id="status-message" aria-live="polite"
+                                class="font-semibold text-indigo-600 dark:text-indigo-400">Idle. Configure a campaign to
+                                begin.</span></p>
                         <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
                             <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
                                 style="width: 0%"></div>
                         </div>
-                        <p><span id="sent-count">0</span> / <span id="total-count">0</span> messages processed.</p>
+                        <p class="text-sm text-center font-medium"><span id="sent-count">0</span> / <span
+                                id="total-count">0</span> messages processed.</p>
                     </div>
                     <div id="logs"
-                        class="mt-4 bg-gray-50 dark:bg-gray-900 p-3 rounded-md h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                        class="mt-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-md h-80 sm:h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
                     </div>
                 </div>
                 <div id="tab-content-failures" class="hidden">
                     <p class="text-sm mb-2 text-gray-600 dark:text-gray-400">Numbers that failed to send will appear
                         here for retrying.</p>
                     <textarea id="failed-numbers"
-                        class="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm h-96"
+                        class="w-full p-3 font-mono text-sm bg-gray-50 dark:bg-gray-900/50 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm h-80 sm:h-96"
                         readonly></textarea>
                 </div>
             </div>
-        </div>
+        </main>
     </div>
 
     <script>
@@ -317,6 +423,7 @@
                 renderContacts();
                 updateCostEstimator();
                 DOMElements.phoneNumberInput.value = '';
+                DOMElements.phoneNumberInput.focus();
                 feedbackEl.textContent = '';
             }
         }
@@ -361,14 +468,14 @@
             DOMElements.contactsList.innerHTML = '';
             DOMElements.contactCount.textContent = campaign.contacts.size;
             if (campaign.contacts.size === 0) {
-                DOMElements.contactsList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 p-2">No contacts added yet.</p>`;
+                DOMElements.contactsList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 p-2 text-center">No contacts added yet.</p>`;
             } else {
                 campaign.contacts.forEach(number => {
                     const pill = document.createElement('div');
                     pill.className = 'flex items-center justify-between bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-sm font-medium px-3 py-1.5 rounded-full';
                     pill.innerHTML = `
                         <span>${number}</span>
-                        <button class="ml-2 text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300">&times;</button>
+                        <button class="ml-2 text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 focus-ring rounded-full w-5 h-5 flex items-center justify-center">&times;</button>
                     `;
                     pill.querySelector('button').onclick = () => removeContact(number);
                     DOMElements.contactsList.appendChild(pill);
@@ -392,8 +499,8 @@
         function validateInputs() {
             if (campaign.contacts.size === 0) {
                 addLog("Validation Error: No contacts have been added.", "error");
-                DOMElements.addNumberBtn.classList.add('shake');
-                setTimeout(() => DOMElements.addNumberBtn.classList.remove('shake'), 500);
+                document.getElementById('contacts-list-container').classList.add('shake');
+                setTimeout(() => document.getElementById('contacts-list-container').classList.remove('shake'), 500);
                 return false;
             }
             if (!DOMElements.messageTextarea.value.trim() && !DOMElements.imageUrlInput.value.trim()) {
@@ -504,14 +611,14 @@
         }
 
         function updateUIForPause() {
-            DOMElements.pauseResumeButton.innerHTML = `Resume`;
+            DOMElements.pauseResumeButton.querySelector('span').textContent = 'Resume';
             DOMElements.pauseResumeButton.classList.replace('bg-yellow-500', 'bg-green-500');
             DOMElements.pauseResumeButton.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
             DOMElements.statusMessage.textContent = 'Paused';
         }
 
         function updateUIForResume() {
-            DOMElements.pauseResumeButton.innerHTML = `Pause`;
+            DOMElements.pauseResumeButton.querySelector('span').textContent = 'Pause';
             DOMElements.pauseResumeButton.classList.replace('bg-green-500', 'bg-yellow-500');
             DOMElements.pauseResumeButton.classList.replace('hover:bg-green-600', 'hover:bg-yellow-600');
             DOMElements.statusMessage.textContent = 'Running...';
@@ -571,22 +678,29 @@
                 success: 'text-green-600 dark:text-green-400',
                 warning: 'text-yellow-500 dark:text-yellow-400',
             };
-            p.className = `text-sm ${typeClasses[type] || 'text-gray-600 dark:text-gray-300'}`;
-            p.innerHTML = `<span class="font-mono text-xs mr-2">[${new Date().toLocaleTimeString()}]</span> ${message}`;
+            p.className = `text-sm ${typeClasses[type] || 'text-gray-600 dark:text-gray-300'} break-words`;
+            p.innerHTML = `<span class="font-mono text-xs mr-2 opacity-70">[${new Date().toLocaleTimeString()}]</span> ${message}`;
             DOMElements.logsContainer.prepend(p);
         }
 
         function switchTab(tab) {
+            const activeClasses = ['border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400'];
+            const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300'];
+
             if (tab === 'logs') {
                 DOMElements.tabContentLogs.classList.remove('hidden');
                 DOMElements.tabContentFailures.classList.add('hidden');
-                DOMElements.tabLogs.classList.add('border-indigo-500', 'text-indigo-600');
-                DOMElements.tabFailures.classList.remove('border-indigo-500', 'text-indigo-600');
+                DOMElements.tabLogs.classList.add(...activeClasses);
+                DOMElements.tabLogs.classList.remove(...inactiveClasses);
+                DOMElements.tabFailures.classList.remove(...activeClasses);
+                DOMElements.tabFailures.classList.add(...inactiveClasses);
             } else {
                 DOMElements.tabContentLogs.classList.add('hidden');
                 DOMElements.tabContentFailures.classList.remove('hidden');
-                DOMElements.tabFailures.classList.add('border-indigo-500', 'text-indigo-600');
-                DOMElements.tabLogs.classList.remove('border-indigo-500', 'text-indigo-600');
+                DOMElements.tabFailures.classList.add(...activeClasses);
+                DOMElements.tabFailures.classList.remove(...inactiveClasses);
+                DOMElements.tabLogs.classList.remove(...activeClasses);
+                DOMElements.tabLogs.classList.add(...inactiveClasses);
             }
         }
 
