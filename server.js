@@ -8,18 +8,30 @@ const app = express();
 // Heroku & Render use the PORT environment variable
 const port = process.env.PORT || 3000;
 
+// --- Security: CORS Configuration ---
+// This is a critical security update. We will only allow requests from your specific
+// frontend application URL, which you will set in your Render environment variables.
+const frontendUrl = process.env.FRONTEND_URL;
+if (!frontendUrl) {
+    console.warn("WARNING: FRONTEND_URL is not set. For production, this is a security risk.");
+}
+const corsOptions = {
+    origin: frontendUrl || "http://localhost:5500", // Fallback for local dev, but production needs the env var.
+};
+app.use(cors(corsOptions));
+
+
 // --- Middleware ---
-app.use(cors());
 app.use(express.json());
+
 
 // --- Security: Rate Limiting ---
 // Apply a rate limit to the /send endpoint to prevent abuse.
-// This allows 100 requests per 15-minute window from a single IP.
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per window
-    standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
-    legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+    standardHeaders: true,
+    legacyHeaders: false,
     message: { error: 'Too many requests from this IP, please try again after 15 minutes.' }
 });
 
@@ -37,7 +49,6 @@ const client = twilio(accountSid, authToken);
 
 
 // --- Main Sending Endpoint ---
-// Apply the rate limiter only to this endpoint.
 app.post('/send', limiter, async (req, res) => {
     const { channel, recipient, message } = req.body;
 
@@ -46,7 +57,6 @@ app.post('/send', limiter, async (req, res) => {
         return res.status(400).json({ error: 'Missing required fields: channel, recipient, or message.' });
     }
 
-    // Validate E.164 format for the recipient number
     const e164Regex = /^\+[1-9]\d{1,14}$/;
     if (!e164Regex.test(recipient)) {
         return res.status(400).json({ error: `Invalid phone number format: ${recipient}. Must be in E.164 format (e.g., +919876543210).` });
@@ -87,9 +97,7 @@ app.post('/send', limiter, async (req, res) => {
 
     } catch (error) {
         // 4. Improved Error Handling
-        // Log the detailed error on the server
         console.error(`Twilio API Error for ${recipient}:`, error.message);
-        // Send a user-friendly error back to the client
         res.status(error.status || 500).json({ error: `Twilio Error: ${error.message}` });
     }
 });
@@ -107,13 +115,12 @@ async function sendWhatsApp(from, to, body) {
 
 async function makeVoiceCall(from, to, textToSay) {
     const twiml = new twilio.twiml.VoiceResponse();
-    // Using a more natural-sounding Polly voice
-    twiml.say({ voice: 'Polly.Aditi' }, textToSay);
+    twiml.say({ voice: 'Polly.Aditi' }, textToSay); // Using a more natural-sounding Polly voice for Indian accent
     twiml.hangup();
-
     return client.calls.create({ twiml: twiml.toString(), to, from });
 }
 
 app.listen(port, () => {
     console.log(`Advanced messaging server listening at http://localhost:${port}`);
 });
+

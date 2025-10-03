@@ -203,7 +203,7 @@
 
     <script>
         // --- CONFIGURATION ---
-        // IMPORTANT: REPLACE THIS with your actual Render server URL once deployed!
+        // IMPORTANT: Replace this with your DEPLOYED Render server URL.
         const API_ENDPOINT = 'https://my-pro-messaging-server.onrender.com/send';
         const PRICING = { // Estimated costs in INR per message/minute in India
             sms: 0.50,
@@ -507,8 +507,10 @@
             if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
                 document.documentElement.classList.add('dark');
                 DOMElements.darkIcon.classList.remove('hidden');
+                DOMElements.lightIcon.classList.add('hidden');
             } else {
                 DOMElements.lightIcon.classList.remove('hidden');
+                DOMElements.darkIcon.classList.add('hidden');
             }
         }
 
