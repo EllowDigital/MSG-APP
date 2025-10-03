@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Advanced Messaging Dashboard</title>
+    <title>Professional Messaging Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
@@ -12,7 +12,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* Simple transition for dark mode */
         body,
         .bg-white,
         .bg-gray-50,
@@ -20,9 +19,36 @@
             transition: background-color 0.3s ease, color 0.3s ease;
         }
 
-        /* Custom focus rings for better accessibility */
         .focus-ring {
             @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-800;
+        }
+
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+
+            10%,
+            90% {
+                transform: translate3d(-1px, 0, 0);
+            }
+
+            20%,
+            80% {
+                transform: translate3d(2px, 0, 0);
+            }
+
+            30%,
+            50%,
+            70% {
+                transform: translate3d(-4px, 0, 0);
+            }
+
+            40%,
+            60% {
+                transform: translate3d(4px, 0, 0);
+            }
         }
     </style>
 </head>
@@ -32,20 +58,16 @@
     <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl">
         <header class="mb-8 flex justify-between items-center">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Messaging Dashboard</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Send SMS, WhatsApp, and Voice campaigns with advanced
-                    controls.</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Pro Messaging Dashboard</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">Campaigns with cost estimation, live controls, and
+                    failure tracking.</p>
             </div>
             <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus-ring">
-                <!-- Sun Icon -->
-                <svg id="theme-icon-light" class="h-6 w-6 text-gray-800" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
+                <svg id="theme-icon-light" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M12 3v1m0 16v1m9-9h-1M4 12H3m15.364 6.364l-.707-.707M6.343 6.343l-.707-.707m12.728 0l-.707.707M6.343 17.657l-.707.707M16 12a4 4 0 11-8 0 4 4 0 018 0z" />
                 </svg>
-                <!-- Moon Icon -->
-                <svg id="theme-icon-dark" class="h-6 w-6 text-gray-200 hidden" fill="none" viewBox="0 0 24 24"
-                    stroke="currentColor">
+                <svg id="theme-icon-dark" class="h-6 w-6 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                         d="M20.354 15.354A9 9 0 018.646 3.646 9.003 9.003 0 0012 21a9.003 9.003 0 008.354-5.646z" />
                 </svg>
@@ -53,168 +75,396 @@
         </header>
 
         <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl">
-            <!-- Channel Selection -->
-            <div class="mb-6">
-                <label for="channel" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">1. Select
-                    Channel</label>
-                <select id="channel"
-                    class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring">
-                    <option value="sms">SMS</option>
-                    <option value="whatsapp">WhatsApp</option>
-                    <option value="call">Voice Call</option>
-                </select>
-            </div>
-
-            <!-- Message Input -->
-            <div class="mb-6">
-                <label for="message" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">2. Compose
-                    Message</label>
-                <textarea id="message" rows="4"
-                    class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
-                    placeholder="Enter your message here... For voice calls, this text will be read out."></textarea>
-            </div>
-
-            <!-- Contacts Input -->
-            <div class="mb-6">
-                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">3. Add Contacts</label>
-                <div class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md text-center">
-                    <input type="file" id="csvFile" accept=".csv" class="hidden">
-                    <button onclick="document.getElementById('csvFile').click()"
-                        class="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition focus-ring">
-                        Upload CSV File
-                    </button>
-                    <p id="file-info" class="text-sm text-gray-500 dark:text-gray-400 mt-2">Upload a CSV with a 'phone'
-                        column.</p>
+            <!-- Form steps -->
+            <div class="space-y-6">
+                <div>
+                    <label for="channel"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                        <span
+                            class="bg-indigo-600 text-white rounded-full h-6 w-6 text-xs flex items-center justify-center mr-2">1</span>
+                        Select Channel
+                    </label>
+                    <select id="channel"
+                        class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"></select>
                 </div>
-                <textarea id="manual-numbers"
-                    class="w-full mt-4 p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
-                    rows="3" placeholder="Or paste numbers here, one per line (e.g., +919876543210)"></textarea>
-            </div>
-
-            <!-- Campaign Controls -->
-            <div class="mb-6">
-                <label for="delay-slider" class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">4.
-                    Sending Speed</label>
-                <div class="flex items-center gap-4">
-                    <span class="text-xs">Fast</span>
-                    <input id="delay-slider" type="range" min="200" max="5000" value="1000"
-                        class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
-                    <span class="text-xs">Slow</span>
+                <div>
+                    <label for="message"
+                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                        <span
+                            class="bg-indigo-600 text-white rounded-full h-6 w-6 text-xs flex items-center justify-center mr-2">2</span>
+                        Compose Message
+                    </label>
+                    <textarea id="message" rows="4"
+                        class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
+                        placeholder="Enter your message here..."></textarea>
                 </div>
-                <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-1">Delay: <span
-                        id="delay-value">1</span> second(s) per message</p>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                        <span
+                            class="bg-indigo-600 text-white rounded-full h-6 w-6 text-xs flex items-center justify-center mr-2">3</span>
+                        Add Contacts
+                    </label>
+                    <div class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md text-center">
+                        <input type="file" id="csvFile" accept=".csv" class="hidden">
+                        <button onclick="document.getElementById('csvFile').click()"
+                            class="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition focus-ring">Upload
+                            CSV</button>
+                        <p id="file-info" class="text-sm text-gray-500 dark:text-gray-400 mt-2">Upload a CSV with a
+                            'phone' column.</p>
+                    </div>
+                    <textarea id="manual-numbers"
+                        class="w-full mt-4 p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
+                        rows="3" placeholder="Or paste numbers here, one per line (e.g., +919876543210)"></textarea>
+                    <p id="number-count-feedback" class="text-sm text-gray-500 dark:text-gray-400 mt-2 text-right"></p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
+                        <span
+                            class="bg-indigo-600 text-white rounded-full h-6 w-6 text-xs flex items-center justify-center mr-2">4</span>
+                        Configure Speed
+                    </label>
+                    <div class="flex items-center gap-4">
+                        <span class="text-xs">Fast</span>
+                        <input id="delay-slider" type="range" min="200" max="5000" value="1000"
+                            class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                        <span class="text-xs">Slow</span>
+                    </div>
+                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-1">Delay: <span
+                            id="delay-value">1.0</span> second(s) per message</p>
+                </div>
+                <div id="cost-estimator" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-center hidden">
+                    <p class="font-medium">Estimated Campaign Cost: <span id="estimated-cost"
+                            class="text-indigo-600 dark:text-indigo-400 font-bold">₹0.00</span></p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Based on standard India pricing. Actual
+                        cost may vary.</p>
+                </div>
             </div>
 
-            <!-- Action Buttons -->
-            <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <button id="send-button"
-                    class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition disabled:bg-indigo-400 dark:disabled:bg-indigo-800 focus-ring">
-                    Start Campaign
+                    class="flex items-center justify-center w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition disabled:bg-indigo-400 dark:disabled:bg-indigo-800 focus-ring">
+                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
+                    </svg>Start Campaign
                 </button>
                 <button id="pause-resume-button"
-                    class="w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-md hover:bg-yellow-600 transition disabled:bg-yellow-300 dark:disabled:bg-yellow-800 focus-ring"
+                    class="flex items-center justify-center w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-md hover:bg-yellow-600 transition disabled:bg-yellow-300 dark:disabled:bg-yellow-800 focus-ring"
                     disabled>
-                    Pause
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z"
+                            clip-rule="evenodd" />
+                    </svg>Pause
                 </button>
                 <button id="stop-button"
-                    class="w-full bg-red-600 text-white font-bold py-3 px-4 rounded-md hover:bg-red-700 transition disabled:bg-red-300 dark:disabled:bg-red-800 focus-ring"
+                    class="flex items-center justify-center w-full bg-red-600 text-white font-bold py-3 px-4 rounded-md hover:bg-red-700 transition disabled:bg-red-300 dark:disabled:bg-red-800 focus-ring"
                     disabled>
-                    Stop
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
+                        <path fill-rule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                            clip-rule="evenodd" />
+                    </svg>Stop
                 </button>
             </div>
         </div>
 
-        <!-- Status Section -->
         <div id="status-container" class="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl hidden">
-            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Campaign Status</h2>
-            <div class="space-y-3">
-                <p><strong>Status:</strong> <span id="status-message">Idle</span></p>
-                <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                    <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
-                        style="width: 0%"></div>
-                </div>
-                <p><span id="sent-count">0</span> / <span id="total-count">0</span> messages sent.</p>
+            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Live Campaign Status</h2>
+            <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
+                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                    <button id="tab-logs"
+                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">Logs</button>
+                    <button id="tab-failures"
+                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200">Failures
+                        (<span id="failure-count">0</span>)</button>
+                </nav>
             </div>
-            <div id="logs"
-                class="mt-4 bg-gray-50 dark:bg-gray-900 p-3 rounded-md h-48 overflow-y-auto border border-gray-200 dark:border-gray-700">
-                <!-- Log messages appear here -->
+            <div id="tab-content-logs">
+                <div class="space-y-3">
+                    <p><strong>Status:</strong> <span id="status-message" aria-live="polite">Idle</span></p>
+                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                        <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
+                            style="width: 0%"></div>
+                    </div>
+                    <p><span id="sent-count">0</span> / <span id="total-count">0</span> messages processed.</p>
+                </div>
+                <div id="logs"
+                    class="mt-4 bg-gray-50 dark:bg-gray-900 p-3 rounded-md h-48 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                </div>
+            </div>
+            <div id="tab-content-failures" class="hidden">
+                <textarea id="failed-numbers"
+                    class="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm h-56"
+                    readonly placeholder="Failed numbers will appear here..."></textarea>
             </div>
         </div>
     </div>
 
     <script>
-        // --- DOM Element Selection ---
-        const channelSelect = document.getElementById('channel');
-        const messageTextarea = document.getElementById('message');
-        const csvFileInput = document.getElementById('csvFile');
-        const manualNumbersTextarea = document.getElementById('manual-numbers');
-        const sendButton = document.getElementById('send-button');
-        const fileInfo = document.getElementById('file-info');
-        const pauseResumeButton = document.getElementById('pause-resume-button');
-        const stopButton = document.getElementById('stop-button');
-        const delaySlider = document.getElementById('delay-slider');
-        const delayValue = document.getElementById('delay-value');
+        // --- CONFIGURATION ---
+        const API_ENDPOINT = 'https://my-pro-messaging-server.onrender.com/send'; // IMPORTANT: REPLACE THIS
+        const PRICING = { // Estimated costs in INR per message/minute in India
+            sms: 0.50,
+            whatsapp: 0.45,
+            call: 1.00
+        };
+        const CHANNELS = [
+            { id: 'sms', name: 'SMS', icon: '📱' },
+            { id: 'whatsapp', name: 'WhatsApp', icon: '🟢' },
+            { id: 'call', name: 'Voice Call', icon: '📞' }
+        ];
 
-        const statusContainer = document.getElementById('status-container');
-        const statusMessage = document.getElementById('status-message');
-        const progressBar = document.getElementById('progress-bar');
-        const sentCountEl = document.getElementById('sent-count');
-        const totalCountEl = document.getElementById('total-count');
-        const logsContainer = document.getElementById('logs');
+        // --- DOM Elements ---
+        const DOMElements = {
+            channelSelect: document.getElementById('channel'),
+            messageTextarea: document.getElementById('message'),
+            csvFileInput: document.getElementById('csvFile'),
+            manualNumbersTextarea: document.getElementById('manual-numbers'),
+            sendButton: document.getElementById('send-button'),
+            fileInfo: document.getElementById('file-info'),
+            pauseResumeButton: document.getElementById('pause-resume-button'),
+            stopButton: document.getElementById('stop-button'),
+            delaySlider: document.getElementById('delay-slider'),
+            delayValue: document.getElementById('delay-value'),
+            statusContainer: document.getElementById('status-container'),
+            statusMessage: document.getElementById('status-message'),
+            progressBar: document.getElementById('progress-bar'),
+            sentCountEl: document.getElementById('sent-count'),
+            totalCountEl: document.getElementById('total-count'),
+            logsContainer: document.getElementById('logs'),
+            themeToggle: document.getElementById('theme-toggle'),
+            lightIcon: document.getElementById('theme-icon-light'),
+            darkIcon: document.getElementById('theme-icon-dark'),
+            costEstimator: document.getElementById('cost-estimator'),
+            estimatedCost: document.getElementById('estimated-cost'),
+            numberCountFeedback: document.getElementById('number-count-feedback'),
+            tabLogs: document.getElementById('tab-logs'),
+            tabFailures: document.getElementById('tab-failures'),
+            tabContentLogs: document.getElementById('tab-content-logs'),
+            tabContentFailures: document.getElementById('tab-content-failures'),
+            failureCount: document.getElementById('failure-count'),
+            failedNumbersTextarea: document.getElementById('failed-numbers'),
+        };
 
-        // --- Dark Mode Toggle ---
-        const themeToggle = document.getElementById('theme-toggle');
-        const lightIcon = document.getElementById('theme-icon-light');
-        const darkIcon = document.getElementById('theme-icon-dark');
-
-        if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            lightIcon.classList.add('hidden');
-            darkIcon.classList.remove('hidden');
-        } else {
-            document.documentElement.classList.remove('dark');
-        }
-
-        themeToggle.addEventListener('click', () => {
-            if (document.documentElement.classList.contains('dark')) {
-                document.documentElement.classList.remove('dark');
-                localStorage.theme = 'light';
-                lightIcon.classList.remove('hidden');
-                darkIcon.classList.add('hidden');
-            } else {
-                document.documentElement.classList.add('dark');
-                localStorage.theme = 'dark';
-                lightIcon.classList.add('hidden');
-                darkIcon.classList.remove('hidden');
-            }
-        });
-
-        // --- Campaign State Management ---
-        let campaignState = {
+        // --- State ---
+        let campaign = {
+            state: 'idle', // idle, running, paused, finished, stopped
             numbers: [],
-            isPaused: false,
-            isStopped: false,
+            failedNumbers: [],
             currentIndex: 0,
             sentCount: 0,
             totalCount: 0,
-            timeoutId: null
+            timeoutId: null,
         };
 
-        // --- Event Listeners ---
-        csvFileInput.addEventListener('change', handleCsvUpload);
-        sendButton.addEventListener('click', startCampaign);
-        pauseResumeButton.addEventListener('click', togglePauseResume);
-        stopButton.addEventListener('click', stopCampaign);
-        delaySlider.addEventListener('input', (e) => {
-            delayValue.textContent = (e.target.value / 1000).toFixed(1);
-        });
+        // --- Initialization ---
+        function initialize() {
+            setupEventListeners();
+            initializeTheme();
+            populateChannelSelect();
+        }
 
-        // --- Core Functions ---
+        function populateChannelSelect() {
+            DOMElements.channelSelect.innerHTML = CHANNELS.map(ch => `<option value="${ch.id}">${ch.icon} ${ch.name}</option>`).join('');
+        }
+
+        // --- Event Listeners Setup ---
+        function setupEventListeners() {
+            DOMElements.themeToggle.addEventListener('click', toggleTheme);
+            DOMElements.csvFileInput.addEventListener('change', handleCsvUpload);
+            DOMElements.sendButton.addEventListener('click', confirmAndStartCampaign);
+            DOMElements.pauseResumeButton.addEventListener('click', togglePauseResume);
+            DOMElements.stopButton.addEventListener('click', stopCampaign);
+            DOMElements.delaySlider.addEventListener('input', e => {
+                DOMElements.delayValue.textContent = (e.target.value / 1000).toFixed(1);
+            });
+            [DOMElements.manualNumbersTextarea, DOMElements.csvFileInput, DOMElements.channelSelect].forEach(el => {
+                el.addEventListener('input', updateCostEstimator);
+                el.addEventListener('change', updateCostEstimator);
+            });
+            DOMElements.tabLogs.addEventListener('click', () => switchTab('logs'));
+            DOMElements.tabFailures.addEventListener('click', () => switchTab('failures'));
+        }
+
+        // --- Core Campaign Logic ---
+        function confirmAndStartCampaign() {
+            const { validNumbers } = getAndValidateNumbers();
+            if (validateInputs(validNumbers)) {
+                const estimatedCost = calculateCost(validNumbers.length);
+                const confirmed = confirm(`This campaign will be sent to ${validNumbers.length} numbers and will cost approximately ₹${estimatedCost.toFixed(2)}.\n\nAre you sure you want to proceed?`);
+                if (confirmed) {
+                    startCampaign(validNumbers);
+                }
+            }
+        }
+
+        function startCampaign(validNumbers) {
+            resetCampaignState();
+            campaign.numbers = validNumbers;
+            campaign.totalCount = validNumbers.length;
+            campaign.state = 'running';
+
+            updateUIForCampaignStart();
+            addLog(`Starting campaign for ${validNumbers.length} numbers via ${DOMElements.channelSelect.value.toUpperCase()}.`);
+
+            sendNextMessage();
+        }
+
+        async function sendNextMessage() {
+            if (campaign.currentIndex >= campaign.totalCount || campaign.state === 'stopped' || campaign.state === 'finished') {
+                finishCampaign();
+                return;
+            }
+            if (campaign.state === 'paused') return;
+
+            const number = campaign.numbers[campaign.currentIndex];
+            const channel = DOMElements.channelSelect.value;
+            const message = DOMElements.messageTextarea.value;
+
+            try {
+                const response = await fetch(API_ENDPOINT, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ channel, message, recipient: number }),
+                });
+
+                const result = await response.json();
+                if (!response.ok) throw new Error(result.error || `HTTP error! status: ${response.status}`);
+
+                campaign.sentCount++;
+                addLog(`Success: ${number} (SID: ${result.sid})`, 'success');
+            } catch (error) {
+                addLog(`Failed: ${number} (${error.message})`, 'error');
+                campaign.failedNumbers.push(number);
+                updateFailuresTab();
+            }
+
+            campaign.currentIndex++;
+            updateProgress();
+
+            const delay = parseInt(DOMElements.delaySlider.value, 10);
+            campaign.timeoutId = setTimeout(sendNextMessage, delay);
+        }
+
+        // --- Campaign Controls ---
+        function togglePauseResume() {
+            if (campaign.state === 'running') {
+                campaign.state = 'paused';
+                clearTimeout(campaign.timeoutId);
+                updateUIForPause();
+                addLog('Campaign paused by user.', 'warning');
+            } else if (campaign.state === 'paused') {
+                campaign.state = 'running';
+                updateUIForResume();
+                addLog('Campaign resumed by user.');
+                sendNextMessage();
+            }
+        }
+
+        function stopCampaign() {
+            if (campaign.state === 'running' || campaign.state === 'paused') {
+                campaign.state = 'stopped';
+                clearTimeout(campaign.timeoutId);
+                addLog('Campaign stopped by user.', 'error');
+                finishCampaign();
+            }
+        }
+
+        function finishCampaign() {
+            const finalState = campaign.state === 'stopped' ? 'stopped' : 'finished';
+            campaign.state = finalState;
+            addLog(`Campaign ${finalState}. Processed ${campaign.currentIndex} of ${campaign.totalCount}. Success: ${campaign.sentCount}, Failures: ${campaign.failedNumbers.length}.`, 'info');
+            updateUIForCampaignEnd();
+        }
+
+        // --- UI & State Helpers ---
+        function updateUIForCampaignStart() {
+            DOMElements.statusContainer.classList.remove('hidden');
+            DOMElements.sendButton.disabled = true;
+            DOMElements.pauseResumeButton.disabled = false;
+            DOMElements.stopButton.disabled = false;
+            DOMElements.statusMessage.textContent = 'Running...';
+            DOMElements.totalCountEl.textContent = campaign.totalCount;
+            DOMElements.sentCountEl.textContent = '0';
+            DOMElements.progressBar.style.width = '0%';
+            DOMElements.logsContainer.innerHTML = '';
+            DOMElements.failedNumbersTextarea.value = '';
+            DOMElements.failureCount.textContent = '0';
+        }
+
+        function updateUIForPause() {
+            const button = DOMElements.pauseResumeButton;
+            button.innerHTML = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>Resume`;
+            button.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
+            button.classList.add('bg-green-500', 'hover:bg-green-600');
+            DOMElements.statusMessage.textContent = 'Paused';
+        }
+
+        function updateUIForResume() {
+            const button = DOMElements.pauseResumeButton;
+            button.innerHTML = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>Pause`;
+            button.classList.remove('bg-green-500', 'hover:bg-green-600');
+            button.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+            DOMElements.statusMessage.textContent = 'Running...';
+        }
+
+        function updateUIForCampaignEnd() {
+            DOMElements.sendButton.disabled = false;
+            DOMElements.pauseResumeButton.disabled = true;
+            DOMElements.stopButton.disabled = true;
+            DOMElements.statusMessage.textContent = campaign.state === 'stopped' ? 'Stopped' : 'Finished';
+            updateUIForResume(); // Reset pause button to default state
+        }
+
+        function updateProgress() {
+            DOMElements.sentCountEl.textContent = campaign.currentIndex;
+            const progress = (campaign.currentIndex / campaign.totalCount) * 100;
+            DOMElements.progressBar.style.width = `${progress}%`;
+        }
+
+        function updateFailuresTab() {
+            DOMElements.failureCount.textContent = campaign.failedNumbers.length;
+            DOMElements.failedNumbersTextarea.value = campaign.failedNumbers.join('\n');
+        }
+
+        function resetCampaignState() {
+            if (campaign.timeoutId) clearTimeout(campaign.timeoutId);
+            campaign = { ...campaign, state: 'idle', numbers: [], failedNumbers: [], currentIndex: 0, sentCount: 0, totalCount: 0, timeoutId: null };
+        }
+
+        // --- Input Handling & Validation ---
+        function getAndValidateNumbers() {
+            const manualNumbers = DOMElements.manualNumbersTextarea.value.split('\n').map(n => n.trim()).filter(Boolean);
+            const allNumbers = [...new Set([...campaign.numbers, ...manualNumbers])];
+
+            const validNumbers = allNumbers.filter(n => /^\+91[6-9]\d{9}$/.test(n));
+            const invalidNumbers = allNumbers.filter(n => !/^\+91[6-9]\d{9}$/.test(n));
+
+            DOMElements.numberCountFeedback.textContent = `Valid: ${validNumbers.length}, Invalid: ${invalidNumbers.length}`;
+            return { validNumbers, invalidNumbers };
+        }
+
+        function validateInputs(validNumbers) {
+            if (validNumbers.length === 0) {
+                addLog("Validation Error: No valid phone numbers found. Please use +91 format.", "error");
+                DOMElements.manualNumbersTextarea.classList.add('shake');
+                setTimeout(() => DOMElements.manualNumbersTextarea.classList.remove('shake'), 500);
+                return false;
+            }
+            if (!DOMElements.messageTextarea.value.trim()) {
+                addLog("Validation Error: Message cannot be empty.", "error");
+                DOMElements.messageTextarea.classList.add('shake');
+                setTimeout(() => DOMElements.messageTextarea.classList.remove('shake'), 500);
+                return false;
+            }
+            return true;
+        }
 
         function handleCsvUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
-            fileInfo.textContent = `File: ${file.name}`;
+            DOMElements.fileInfo.textContent = `File: ${file.name}`;
 
             const reader = new FileReader();
             reader.onload = (e) => {
@@ -224,180 +474,80 @@
                 const phoneIndex = header.indexOf('phone');
 
                 if (phoneIndex === -1) {
-                    addLog("Error: CSV must have a 'phone' column.", "error");
-                    return;
+                    addLog("CSV Error: File must have a 'phone' column header.", "error"); return;
                 }
-
-                campaignState.numbers = rows.slice(1).map(row => {
-                    const values = row.split(',');
-                    return values[phoneIndex]?.trim();
-                }).filter(Boolean);
-
-                addLog(`Loaded ${campaignState.numbers.length} numbers from CSV.`, "success");
+                campaign.numbers = rows.slice(1).map(row => row.split(',')[phoneIndex]?.trim()).filter(Boolean);
+                addLog(`Loaded ${campaign.numbers.length} numbers from CSV.`, "success");
+                updateCostEstimator();
             };
             reader.readAsText(file);
         }
 
-        function startCampaign() {
-            const manualNumbers = manualNumbersTextarea.value.split('\n').map(n => n.trim()).filter(Boolean);
-            const allNumbers = [...new Set([...campaignState.numbers, ...manualNumbers])];
-
-            if (allNumbers.length === 0) {
-                addLog("Error: No phone numbers to send to.", "error");
-                return;
-            }
-            if (!messageTextarea.value) {
-                addLog("Error: Message cannot be empty.", "error");
-                return;
-            }
-
-            // Validate numbers (+91XXXXXXXXXX format)
-            const validNumbers = allNumbers.filter(n => /^\+91[6-9]\d{9}$/.test(n));
-            const invalidNumbers = allNumbers.filter(n => !/^\+91[6-9]\d{9}$/.test(n));
-
-            if (invalidNumbers.length > 0) {
-                addLog(`Warning: Skipped ${invalidNumbers.length} invalid numbers (must be +91 format).`, 'warning');
-            }
-            if (validNumbers.length === 0) {
-                addLog("Error: No valid phone numbers found.", "error");
-                return;
-            }
-
-            // Reset and initialize campaign state
-            resetCampaignState();
-            campaignState.totalCount = validNumbers.length;
-            campaignState.numbers = validNumbers;
-
-            // UI update for campaign start
-            statusContainer.classList.remove('hidden');
-            logsContainer.innerHTML = '';
-            addLog(`Starting campaign for ${validNumbers.length} numbers via ${channelSelect.value.toUpperCase()}.`);
-            updateUIForCampaignStart();
-
-            // Start the sending loop
-            sendNextMessage();
+        // --- Cost Estimator ---
+        function calculateCost(numberCount) {
+            const channel = DOMElements.channelSelect.value;
+            const pricePerUnit = PRICING[channel] || 0;
+            return numberCount * pricePerUnit;
         }
 
-        async function sendNextMessage() {
-            if (campaignState.currentIndex >= campaignState.totalCount || campaignState.isStopped) {
-                finishCampaign();
-                return;
-            }
-            if (campaignState.isPaused) {
-                return; // Stop the loop if paused
-            }
-
-            const number = campaignState.numbers[campaignState.currentIndex];
-            const channel = channelSelect.value;
-            const message = messageTextarea.value;
-
-            try {
-                // IMPORTANT: Replace with your deployed Render URL
-                const response = await fetch('https://my-bulk-messaging-server.onrender.com/send', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ channel, message, recipient: number }),
-                });
-
-                const result = await response.json();
-                if (response.ok) {
-                    campaignState.sentCount++;
-                    addLog(`Successfully sent to ${number}. SID: ${result.sid}`, 'success');
-                } else {
-                    throw new Error(result.error || 'Unknown server error');
-                }
-            } catch (error) {
-                addLog(`Failed to send to ${number}. Reason: ${error.message}`, 'error');
-            }
-
-            campaignState.currentIndex++;
-            updateProgress();
-
-            // Schedule the next message
-            const delay = parseInt(delaySlider.value, 10);
-            campaignState.timeoutId = setTimeout(sendNextMessage, delay);
-        }
-
-        function togglePauseResume() {
-            campaignState.isPaused = !campaignState.isPaused;
-            if (campaignState.isPaused) {
-                clearTimeout(campaignState.timeoutId);
-                pauseResumeButton.textContent = 'Resume';
-                pauseResumeButton.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
-                pauseResumeButton.classList.add('bg-green-500', 'hover:bg-green-600');
-                statusMessage.textContent = 'Paused';
-                addLog('Campaign paused by user.', 'warning');
+        function updateCostEstimator() {
+            const { validNumbers } = getAndValidateNumbers();
+            if (validNumbers.length > 0) {
+                const totalCost = calculateCost(validNumbers.length);
+                DOMElements.estimatedCost.textContent = `₹${totalCost.toFixed(2)}`;
+                DOMElements.costEstimator.classList.remove('hidden');
             } else {
-                pauseResumeButton.textContent = 'Pause';
-                pauseResumeButton.classList.remove('bg-green-500', 'hover:bg-green-600');
-                pauseResumeButton.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
-                statusMessage.textContent = 'Sending...';
-                addLog('Campaign resumed by user.');
-                sendNextMessage(); // Continue where we left off
+                DOMElements.costEstimator.classList.add('hidden');
             }
         }
 
-        function stopCampaign() {
-            campaignState.isStopped = true;
-            clearTimeout(campaignState.timeoutId);
-            addLog('Campaign stopped by user.', 'error');
-            finishCampaign();
+        // --- Theming & Tabs ---
+        function initializeTheme() {
+            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
+                document.documentElement.classList.add('dark');
+                DOMElements.darkIcon.classList.remove('hidden');
+            } else {
+                DOMElements.lightIcon.classList.remove('hidden');
+            }
         }
 
-        // --- UI and State Helpers ---
-        function updateUIForCampaignStart() {
-            sendButton.disabled = true;
-            pauseResumeButton.disabled = false;
-            stopButton.disabled = false;
-            statusMessage.textContent = 'Sending...';
-            sentCountEl.textContent = '0';
-            totalCountEl.textContent = campaignState.totalCount;
-            progressBar.style.width = '0%';
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            DOMElements.lightIcon.classList.toggle('hidden', isDark);
+            DOMElements.darkIcon.classList.toggle('hidden', !isDark);
         }
 
-        function updateUIForCampaignEnd() {
-            sendButton.disabled = false;
-            pauseResumeButton.disabled = true;
-            stopButton.disabled = true;
-            pauseResumeButton.textContent = 'Pause';
-            pauseResumeButton.classList.remove('bg-green-500', 'hover:bg-green-600');
-            pauseResumeButton.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+        function switchTab(tab) {
+            if (tab === 'logs') {
+                DOMElements.tabContentLogs.classList.remove('hidden');
+                DOMElements.tabContentFailures.classList.add('hidden');
+                DOMElements.tabLogs.classList.add('border-indigo-500', 'text-indigo-600');
+                DOMElements.tabFailures.classList.remove('border-indigo-500', 'text-indigo-600');
+            } else {
+                DOMElements.tabContentLogs.classList.add('hidden');
+                DOMElements.tabContentFailures.classList.remove('hidden');
+                DOMElements.tabFailures.classList.add('border-indigo-500', 'text-indigo-600');
+                DOMElements.tabLogs.classList.remove('border-indigo-500', 'text-indigo-600');
+            }
         }
 
-        function updateProgress() {
-            sentCountEl.textContent = campaignState.sentCount;
-            const progressPercentage = (campaignState.currentIndex / campaignState.totalCount) * 100;
-            progressBar.style.width = `${progressPercentage}%`;
-        }
-
-        function finishCampaign() {
-            const finalStatus = campaignState.isStopped ? 'Stopped' : 'Finished';
-            statusMessage.textContent = `Campaign ${finalStatus}`;
-            addLog(`Campaign ${finalStatus}. Successfully sent to ${campaignState.sentCount} out of ${campaignState.totalCount}.`);
-            updateUIForCampaignEnd();
-        }
-
-        function resetCampaignState() {
-            campaignState.isPaused = false;
-            campaignState.isStopped = false;
-            campaignState.currentIndex = 0;
-            campaignState.sentCount = 0;
-            campaignState.totalCount = 0;
-            if (campaignState.timeoutId) clearTimeout(campaignState.timeoutId);
-        }
-
+        // --- Utilities ---
         function addLog(message, type = 'info') {
             const logEntry = document.createElement('p');
             const typeClasses = {
                 error: 'text-red-500 dark:text-red-400',
                 success: 'text-green-600 dark:text-green-400',
-                warning: 'text-yellow-600 dark:text-yellow-400',
+                warning: 'text-yellow-500 dark:text-yellow-400',
                 info: 'text-gray-600 dark:text-gray-300'
             };
             logEntry.className = `text-sm ${typeClasses[type] || typeClasses.info}`;
             logEntry.innerHTML = `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`;
-            logsContainer.prepend(logEntry);
+            DOMElements.logsContainer.prepend(logEntry);
         }
+
+        // --- Start the App ---
+        document.addEventListener('DOMContentLoaded', initialize);
     </script>
 </body>
 
