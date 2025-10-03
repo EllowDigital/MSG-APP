@@ -4,19 +4,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Professional Messaging Dashboard</title>
+    <title>Advanced Messaging Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-        }
-
-        body,
-        .bg-white,
-        .bg-gray-50,
-        .bg-gray-100 {
-            transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .focus-ring {
@@ -53,14 +46,13 @@
     </style>
 </head>
 
-<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200">
+<body class="bg-gray-100 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
 
-    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl">
+    <div class="container mx-auto p-4 sm:p-6 md:p-8">
         <header class="mb-8 flex justify-between items-center">
             <div>
-                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Pro Messaging Dashboard</h1>
-                <p class="text-gray-600 dark:text-gray-400 mt-1">Campaigns with cost estimation, live controls, and
-                    failure tracking.</p>
+                <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Advanced Messaging Dashboard</h1>
+                <p class="text-gray-600 dark:text-gray-400 mt-1">A powerful tool for your communication campaigns.</p>
             </div>
             <button id="theme-toggle" class="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700 focus-ring">
                 <svg id="theme-icon-light" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -74,155 +66,147 @@
             </button>
         </header>
 
-        <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl">
-            <!-- Form steps -->
-            <div class="space-y-6">
-                <div>
-                    <label for="channel"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                        <span
-                            class="bg-indigo-600 text-white rounded-full h-6 w-6 text-xs flex items-center justify-center mr-2">1</span>
-                        Select Channel
-                    </label>
-                    <select id="channel"
-                        class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"></select>
-                </div>
-                <div>
-                    <label for="message"
-                        class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                        <span
-                            class="bg-indigo-600 text-white rounded-full h-6 w-6 text-xs flex items-center justify-center mr-2">2</span>
-                        Compose Message
-                    </label>
-                    <textarea id="message" rows="4"
-                        class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
-                        placeholder="Enter your message here..."></textarea>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-                    <!-- Image URL Input -->
+            <div class="space-y-6">
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">1. Compose Campaign</h2>
+                    <div>
+                        <label for="channel"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Channel</label>
+                        <select id="channel"
+                            class="mt-1 w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"></select>
+                    </div>
+                    <div class="mt-4">
+                        <label for="message"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
+                        <textarea id="message" rows="4"
+                            class="mt-1 w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
+                            placeholder="Enter your message..."></textarea>
+                    </div>
                     <div id="image-url-container" class="mt-4">
                         <label for="image-url"
-                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Optional: Image URL
-                            (for SMS/WhatsApp)</label>
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300">Optional Image
+                            URL</label>
                         <input type="text" id="image-url"
-                            class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
+                            class="mt-1 w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
                             placeholder="https://example.com/image.png">
                     </div>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                        <span
-                            class="bg-indigo-600 text-white rounded-full h-6 w-6 text-xs flex items-center justify-center mr-2">3</span>
-                        Add Contacts
-                    </label>
-                    <div class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md text-center">
-                        <input type="file" id="csvFile" accept=".csv" class="hidden">
-                        <button onclick="document.getElementById('csvFile').click()"
-                            class="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition focus-ring">Upload
-                            CSV</button>
-                        <p id="file-info" class="text-sm text-gray-500 dark:text-gray-400 mt-2">Upload a CSV with a
-                            'phone' column.</p>
+
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">2. Add Contacts</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Add Number
+                                Manually</label>
+                            <div class="mt-1 flex gap-2">
+                                <input type="text" id="country-code" value="+91"
+                                    class="w-1/4 p-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
+                                    placeholder="e.g., +91">
+                                <input type="tel" id="phone-number"
+                                    class="flex-grow p-2 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
+                                    placeholder="9876543210">
+                                <button id="add-number-btn"
+                                    class="px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus-ring">Add</button>
+                            </div>
+                            <p id="add-number-feedback" class="text-xs text-red-500 mt-1 h-4"></p>
+                        </div>
+                        <div
+                            class="p-4 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-md text-center">
+                            <input type="file" id="csvFile" accept=".csv" class="hidden">
+                            <button onclick="document.getElementById('csvFile').click()"
+                                class="bg-gray-200 dark:bg-gray-600 text-gray-700 dark:text-gray-200 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 dark:hover:bg-gray-500 transition focus-ring">Upload
+                                CSV</button>
+                            <p id="file-info" class="text-sm text-gray-500 dark:text-gray-400 mt-2">Upload a CSV with a
+                                'phone' column.</p>
+                        </div>
+                        <div id="contacts-list-container" class="mt-4">
+                            <h3 class="font-medium text-gray-700 dark:text-gray-300">Contacts (<span
+                                    id="contact-count">0</span>)</h3>
+                            <div id="contacts-list"
+                                class="mt-2 p-2 border dark:border-gray-600 rounded-md max-h-48 overflow-y-auto space-y-2">
+                            </div>
+                        </div>
                     </div>
-                    <textarea id="manual-numbers"
-                        class="w-full mt-4 p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
-                        rows="3" placeholder="Or paste numbers here, one per line (e.g., +919876543210)"></textarea>
-                    <p id="number-count-feedback" class="text-sm text-gray-500 dark:text-gray-400 mt-2 text-right"></p>
                 </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
-                        <span
-                            class="bg-indigo-600 text-white rounded-full h-6 w-6 text-xs flex items-center justify-center mr-2">4</span>
-                        Configure Speed
-                    </label>
-                    <div class="flex items-center gap-4">
-                        <span class="text-xs">Fast</span>
-                        <input id="delay-slider" type="range" min="200" max="5000" value="1000"
-                            class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
-                        <span class="text-xs">Slow</span>
+
+                <div class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg">
+                    <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">3. Configure & Launch</h2>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sending
+                            Speed</label>
+                        <div class="flex items-center gap-4">
+                            <span class="text-xs">Fast</span>
+                            <input id="delay-slider" type="range" min="200" max="5000" value="1000"
+                                class="w-full h-2 bg-gray-200 dark:bg-gray-600 rounded-lg appearance-none cursor-pointer">
+                            <span class="text-xs">Slow</span>
+                        </div>
+                        <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-1">Delay: <span
+                                id="delay-value">1.0</span>s per message</p>
                     </div>
-                    <p class="text-sm text-gray-500 dark:text-gray-400 text-center mt-1">Delay: <span
-                            id="delay-value">1.0</span> second(s) per message</p>
-                </div>
-                <div id="cost-estimator" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-center hidden">
-                    <p class="font-medium">Estimated Campaign Cost: <span id="estimated-cost"
-                            class="text-indigo-600 dark:text-indigo-400 font-bold">₹0.00</span></p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Based on standard India pricing. MMS/Media
-                        messages may cost more.</p>
+                    <div id="cost-estimator" class="mt-6 p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-center">
+                        <p class="font-medium">Estimated Cost: <span id="estimated-cost"
+                                class="text-indigo-600 dark:text-indigo-400 font-bold">₹0.00</span></p>
+                        <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Based on standard India pricing. Media
+                            messages may cost more.</p>
+                    </div>
+                    <div class="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                        <button id="send-button"
+                            class="flex items-center justify-center w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed focus-ring col-span-1 sm:col-span-3">Start
+                            Campaign</button>
+                        <button id="pause-resume-button"
+                            class="flex items-center justify-center w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-md hover:bg-yellow-600 transition disabled:bg-yellow-300 disabled:cursor-not-allowed focus-ring"
+                            disabled>Pause</button>
+                        <button id="stop-button"
+                            class="flex items-center justify-center w-full bg-red-600 text-white font-bold py-3 px-4 rounded-md hover:bg-red-700 transition disabled:bg-red-300 disabled:cursor-not-allowed focus-ring col-span-1 sm:col-span-2"
+                            disabled>Stop</button>
+                    </div>
                 </div>
             </div>
 
-            <div class="mt-8 grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <button id="send-button"
-                    class="flex items-center justify-center w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition disabled:bg-indigo-400 dark:disabled:bg-indigo-800 focus-ring">
-                    <svg class="w-5 h-5 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                            d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" />
-                    </svg>Start Campaign
-                </button>
-                <button id="pause-resume-button"
-                    class="flex items-center justify-center w-full bg-yellow-500 text-white font-bold py-3 px-4 rounded-md hover:bg-yellow-600 transition disabled:bg-yellow-300 dark:disabled:bg-yellow-800 focus-ring"
-                    disabled>
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z"
-                            clip-rule="evenodd" />
-                    </svg>Pause
-                </button>
-                <button id="stop-button"
-                    class="flex items-center justify-center w-full bg-red-600 text-white font-bold py-3 px-4 rounded-md hover:bg-red-700 transition disabled:bg-red-300 dark:disabled:bg-red-800 focus-ring"
-                    disabled>
-                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
-                        <path fill-rule="evenodd"
-                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
-                            clip-rule="evenodd" />
-                    </svg>Stop
-                </button>
-            </div>
-        </div>
-
-        <div id="status-container" class="mt-8 bg-white dark:bg-gray-800 p-6 rounded-lg shadow-xl hidden">
-            <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Live Campaign Status</h2>
-            <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
-                <nav class="-mb-px flex space-x-8" aria-label="Tabs">
-                    <button id="tab-logs"
-                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">Logs</button>
-                    <button id="tab-failures"
-                        class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200">Failures
-                        (<span id="failure-count">0</span>)</button>
-                </nav>
-            </div>
-            <div id="tab-content-logs">
-                <div class="space-y-3">
-                    <p><strong>Status:</strong> <span id="status-message" aria-live="polite">Idle</span></p>
-                    <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
-                        <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
-                            style="width: 0%"></div>
+            <div id="status-container" class="bg-white dark:bg-gray-800 p-6 rounded-lg shadow-lg h-fit">
+                <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Live Campaign Status</h2>
+                <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
+                    <nav class="-mb-px flex space-x-8" aria-label="Tabs">
+                        <button id="tab-logs"
+                            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-indigo-500 text-indigo-600">Logs</button>
+                        <button id="tab-failures"
+                            class="whitespace-nowrap py-4 px-1 border-b-2 font-medium text-sm border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300 dark:text-gray-400 dark:hover:text-gray-200">Failures
+                            (<span id="failure-count">0</span>)</button>
+                    </nav>
+                </div>
+                <div id="tab-content-logs">
+                    <div class="space-y-3">
+                        <p><strong>Status:</strong> <span id="status-message" aria-live="polite">Idle. Configure a
+                                campaign to begin.</span></p>
+                        <div class="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2.5">
+                            <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full transition-all duration-300"
+                                style="width: 0%"></div>
+                        </div>
+                        <p><span id="sent-count">0</span> / <span id="total-count">0</span> messages processed.</p>
                     </div>
-                    <p><span id="sent-count">0</span> / <span id="total-count">0</span> messages processed.</p>
+                    <div id="logs"
+                        class="mt-4 bg-gray-50 dark:bg-gray-900 p-3 rounded-md h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                    </div>
                 </div>
-                <div id="logs"
-                    class="mt-4 bg-gray-50 dark:bg-gray-900 p-3 rounded-md h-48 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                <div id="tab-content-failures" class="hidden">
+                    <p class="text-sm mb-2 text-gray-600 dark:text-gray-400">Numbers that failed to send will appear
+                        here for retrying.</p>
+                    <textarea id="failed-numbers"
+                        class="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm h-96"
+                        readonly></textarea>
                 </div>
-            </div>
-            <div id="tab-content-failures" class="hidden">
-                <textarea id="failed-numbers"
-                    class="w-full p-3 bg-gray-50 dark:bg-gray-900 border border-gray-200 dark:border-gray-700 rounded-md shadow-sm h-56"
-                    readonly placeholder="Failed numbers will appear here..."></textarea>
             </div>
         </div>
     </div>
 
     <script>
         // --- CONFIGURATION ---
-        const API_ENDPOINT = 'https://my-bulk-messaging-server.onrender.com/send'; // Your actual Render URL
-        const PRICING = {
-            sms: 0.50,
-            whatsapp: 0.45,
-            call: 1.00
-        };
+        const API_ENDPOINT = 'http://localhost:3000/send'; // Change to your Render URL for production
+        const PRICING = { sms: 0.50, whatsapp: 0.45, call: 1.00 };
         const CHANNELS = [
-            { id: 'sms', name: 'SMS', icon: '📱' },
-            { id: 'whatsapp', name: 'WhatsApp', icon: '🟢' },
-            { id: 'call', name: 'Voice Call', icon: '📞' }
+            { id: 'sms', name: 'SMS' }, { id: 'whatsapp', name: 'WhatsApp' }, { id: 'call', name: 'Voice Call' }
         ];
 
         // --- DOM Elements ---
@@ -231,15 +215,19 @@
             messageTextarea: document.getElementById('message'),
             imageUrlInput: document.getElementById('image-url'),
             imageUrlContainer: document.getElementById('image-url-container'),
+            countryCodeInput: document.getElementById('country-code'),
+            phoneNumberInput: document.getElementById('phone-number'),
+            addNumberBtn: document.getElementById('add-number-btn'),
+            addNumberFeedback: document.getElementById('add-number-feedback'),
             csvFileInput: document.getElementById('csvFile'),
-            manualNumbersTextarea: document.getElementById('manual-numbers'),
-            sendButton: document.getElementById('send-button'),
             fileInfo: document.getElementById('file-info'),
+            contactsList: document.getElementById('contacts-list'),
+            contactCount: document.getElementById('contact-count'),
+            sendButton: document.getElementById('send-button'),
             pauseResumeButton: document.getElementById('pause-resume-button'),
             stopButton: document.getElementById('stop-button'),
             delaySlider: document.getElementById('delay-slider'),
             delayValue: document.getElementById('delay-value'),
-            statusContainer: document.getElementById('status-container'),
             statusMessage: document.getElementById('status-message'),
             progressBar: document.getElementById('progress-bar'),
             sentCountEl: document.getElementById('sent-count'),
@@ -250,7 +238,6 @@
             darkIcon: document.getElementById('theme-icon-dark'),
             costEstimator: document.getElementById('cost-estimator'),
             estimatedCost: document.getElementById('estimated-cost'),
-            numberCountFeedback: document.getElementById('number-count-feedback'),
             tabLogs: document.getElementById('tab-logs'),
             tabFailures: document.getElementById('tab-failures'),
             tabContentLogs: document.getElementById('tab-content-logs'),
@@ -261,12 +248,11 @@
 
         // --- State ---
         let campaign = {
-            state: 'idle',
-            numbers: [],
+            state: 'idle', // idle, running, paused, stopped, finished
+            contacts: new Set(), // Use a Set to automatically handle duplicates
             failedNumbers: [],
             currentIndex: 0,
             sentCount: 0,
-            totalCount: 0,
             timeoutId: null,
         };
 
@@ -276,86 +262,182 @@
             initializeTheme();
             populateChannelSelect();
             toggleImageInputVisibility();
+            updateCostEstimator();
         }
 
         function populateChannelSelect() {
-            DOMElements.channelSelect.innerHTML = CHANNELS.map(ch => `<option value="${ch.id}">${ch.icon} ${ch.name}</option>`).join('');
+            DOMElements.channelSelect.innerHTML = CHANNELS.map(ch => `<option value="${ch.id}">${ch.name}</option>`).join('');
         }
 
-        // --- Event Listeners Setup ---
+        // --- Event Listeners ---
         function setupEventListeners() {
             DOMElements.themeToggle.addEventListener('click', toggleTheme);
+            DOMElements.channelSelect.addEventListener('change', () => {
+                toggleImageInputVisibility();
+                updateCostEstimator();
+            });
             DOMElements.csvFileInput.addEventListener('change', handleCsvUpload);
+            DOMElements.addNumberBtn.addEventListener('click', handleAddNumber);
+            DOMElements.phoneNumberInput.addEventListener('keypress', (e) => {
+                if (e.key === 'Enter') handleAddNumber();
+            });
             DOMElements.sendButton.addEventListener('click', confirmAndStartCampaign);
             DOMElements.pauseResumeButton.addEventListener('click', togglePauseResume);
             DOMElements.stopButton.addEventListener('click', stopCampaign);
             DOMElements.delaySlider.addEventListener('input', e => {
                 DOMElements.delayValue.textContent = (e.target.value / 1000).toFixed(1);
             });
-            [DOMElements.manualNumbersTextarea, DOMElements.csvFileInput, DOMElements.channelSelect].forEach(el => {
-                el.addEventListener('input', updateCostEstimator);
-                el.addEventListener('change', updateCostEstimator);
-            });
-            DOMElements.channelSelect.addEventListener('change', toggleImageInputVisibility);
             DOMElements.tabLogs.addEventListener('click', () => switchTab('logs'));
             DOMElements.tabFailures.addEventListener('click', () => switchTab('failures'));
         }
 
-        function toggleImageInputVisibility() {
-            const selectedChannel = DOMElements.channelSelect.value;
-            DOMElements.imageUrlContainer.style.display = (selectedChannel === 'sms' || selectedChannel === 'whatsapp') ? 'block' : 'none';
+        // --- Contact Management ---
+        function handleAddNumber() {
+            const countryCode = DOMElements.countryCodeInput.value.trim();
+            const phone = DOMElements.phoneNumberInput.value.trim();
+            const feedbackEl = DOMElements.addNumberFeedback;
+
+            if (!phone) {
+                feedbackEl.textContent = "Phone number cannot be empty.";
+                return;
+            }
+
+            const fullNumber = countryCode.startsWith('+') ? `${countryCode}${phone}` : `+${countryCode}${phone}`;
+
+            // A more general E.164-like validation
+            if (!/^\+[1-9]\d{6,14}$/.test(fullNumber)) {
+                feedbackEl.textContent = `Invalid number format: ${fullNumber}`;
+                return;
+            }
+
+            if (campaign.contacts.has(fullNumber)) {
+                feedbackEl.textContent = "This number has already been added.";
+            } else {
+                campaign.contacts.add(fullNumber);
+                renderContacts();
+                updateCostEstimator();
+                DOMElements.phoneNumberInput.value = '';
+                feedbackEl.textContent = '';
+            }
         }
+
+        function handleCsvUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            DOMElements.fileInfo.textContent = `File: ${file.name}`;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const rows = text.split('\n').map(row => row.trim()).filter(Boolean);
+                const header = rows[0].split(',').map(h => h.trim().toLowerCase());
+                const phoneIndex = header.indexOf('phone');
+
+                if (phoneIndex === -1) {
+                    addLog("CSV Error: File must have a 'phone' column header.", "error"); return;
+                }
+                const numbersFromCsv = rows.slice(1).map(row => row.split(',')[phoneIndex]?.trim()).filter(Boolean);
+                let addedCount = 0;
+                numbersFromCsv.forEach(num => {
+                    // Basic validation before adding
+                    if (/^\+?[1-9]\d{6,14}$/.test(num) && !campaign.contacts.has(num)) {
+                        campaign.contacts.add(num.startsWith('+') ? num : `+${num}`);
+                        addedCount++;
+                    }
+                });
+                renderContacts();
+                updateCostEstimator();
+                addLog(`Loaded and added ${addedCount} new unique numbers from CSV.`, "success");
+            };
+            reader.readAsText(file);
+        }
+
+        function removeContact(numberToRemove) {
+            campaign.contacts.delete(numberToRemove);
+            renderContacts();
+            updateCostEstimator();
+        }
+
+        function renderContacts() {
+            DOMElements.contactsList.innerHTML = '';
+            DOMElements.contactCount.textContent = campaign.contacts.size;
+            if (campaign.contacts.size === 0) {
+                DOMElements.contactsList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 p-2">No contacts added yet.</p>`;
+            } else {
+                campaign.contacts.forEach(number => {
+                    const pill = document.createElement('div');
+                    pill.className = 'flex items-center justify-between bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-sm font-medium px-3 py-1.5 rounded-full';
+                    pill.innerHTML = `
+                        <span>${number}</span>
+                        <button class="ml-2 text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300">&times;</button>
+                    `;
+                    pill.querySelector('button').onclick = () => removeContact(number);
+                    DOMElements.contactsList.appendChild(pill);
+                });
+            }
+        }
+
 
         // --- Core Campaign Logic ---
         function confirmAndStartCampaign() {
-            const { validNumbers } = getAndValidateNumbers();
-            if (validateInputs(validNumbers)) {
-                const estimatedCost = calculateCost(validNumbers.length);
-                const confirmed = confirm(`This campaign will be sent to ${validNumbers.length} numbers and will cost approximately ₹${estimatedCost.toFixed(2)}.\n\nAre you sure you want to proceed?`);
-                if (confirmed) {
-                    startCampaign(validNumbers);
-                }
+            if (!validateInputs()) return;
+
+            const contactCount = campaign.contacts.size;
+            const estimatedCost = calculateCost(contactCount);
+
+            if (confirm(`This campaign will be sent to ${contactCount} numbers.\nEstimated cost: ₹${estimatedCost.toFixed(2)}.\n\nProceed?`)) {
+                startCampaign();
             }
         }
 
-        function startCampaign(validNumbers) {
-            resetCampaignState();
-            campaign.numbers = validNumbers;
-            campaign.totalCount = validNumbers.length;
+        function validateInputs() {
+            if (campaign.contacts.size === 0) {
+                addLog("Validation Error: No contacts have been added.", "error");
+                DOMElements.addNumberBtn.classList.add('shake');
+                setTimeout(() => DOMElements.addNumberBtn.classList.remove('shake'), 500);
+                return false;
+            }
+            if (!DOMElements.messageTextarea.value.trim() && !DOMElements.imageUrlInput.value.trim()) {
+                addLog("Validation Error: Message or Image URL cannot be empty.", "error");
+                DOMElements.messageTextarea.classList.add('shake');
+                setTimeout(() => DOMElements.messageTextarea.classList.remove('shake'), 500);
+                return false;
+            }
+            return true;
+        }
+
+        function startCampaign() {
+            resetCampaignState(); // Resets stats but keeps contacts
+            const numbersArray = Array.from(campaign.contacts);
             campaign.state = 'running';
+            campaign.totalCount = numbersArray.length;
 
             updateUIForCampaignStart();
-            addLog(`Starting campaign for ${validNumbers.length} numbers via ${DOMElements.channelSelect.value.toUpperCase()}.`);
+            addLog(`Starting campaign for ${campaign.totalCount} numbers via ${DOMElements.channelSelect.value.toUpperCase()}.`);
 
-            sendNextMessage();
+            sendNextMessage(numbersArray);
         }
 
-        async function sendNextMessage() {
-            if (campaign.currentIndex >= campaign.totalCount || campaign.state === 'stopped' || campaign.state === 'finished') {
-                finishCampaign();
-                return;
-            }
-            if (campaign.state === 'paused') {
+        async function sendNextMessage(numbers) {
+            if (campaign.currentIndex >= campaign.totalCount || campaign.state !== 'running') {
+                if (campaign.state === 'running') finishCampaign();
                 return;
             }
 
-            const number = campaign.numbers[campaign.currentIndex];
+            const number = numbers[campaign.currentIndex];
             const channel = DOMElements.channelSelect.value;
             const message = DOMElements.messageTextarea.value;
             const imageUrl = DOMElements.imageUrlInput.value.trim();
+            const payload = { channel, message, recipient: number };
+            if (imageUrl && (channel === 'sms' || channel === 'whatsapp')) {
+                payload.imageUrl = imageUrl;
+            }
 
             try {
-                const payload = { channel, message, recipient: number };
-                if (imageUrl && (channel === 'sms' || channel === 'whatsapp')) {
-                    payload.imageUrl = imageUrl;
-                }
-
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
-
                 const result = await response.json();
                 if (!response.ok) throw new Error(result.error || `HTTP error! status: ${response.status}`);
 
@@ -368,26 +450,25 @@
             } finally {
                 campaign.currentIndex++;
                 updateProgress();
-
-                if (campaign.state === 'running') {
-                    const delay = parseInt(DOMElements.delaySlider.value, 10);
-                    campaign.timeoutId = setTimeout(sendNextMessage, delay);
-                }
+                const delay = parseInt(DOMElements.delaySlider.value, 10);
+                campaign.timeoutId = setTimeout(() => sendNextMessage(numbers), delay);
             }
         }
 
-        // --- Campaign Controls ---
+        // --- Campaign Controls & UI Updates ---
         function togglePauseResume() {
             if (campaign.state === 'running') {
                 campaign.state = 'paused';
                 clearTimeout(campaign.timeoutId);
                 updateUIForPause();
-                addLog('Campaign paused by user.', 'warning');
+                addLog('Campaign paused.', 'warning');
             } else if (campaign.state === 'paused') {
                 campaign.state = 'running';
                 updateUIForResume();
-                addLog('Campaign resumed by user.');
-                sendNextMessage();
+                addLog('Campaign resumed.');
+                // Re-grab the current numbers and continue
+                const numbersArray = Array.from(campaign.contacts);
+                sendNextMessage(numbersArray);
             }
         }
 
@@ -407,12 +488,7 @@
             updateUIForCampaignEnd();
         }
 
-        // --- UI & State Helpers ---
         function updateUIForCampaignStart() {
-            DOMElements.statusContainer.classList.remove('hidden');
-            DOMElements.sendButton.disabled = true;
-            DOMElements.pauseResumeButton.disabled = false;
-            DOMElements.stopButton.disabled = false;
             DOMElements.statusMessage.textContent = 'Running...';
             DOMElements.totalCountEl.textContent = campaign.totalCount;
             DOMElements.sentCountEl.textContent = '0';
@@ -420,35 +496,49 @@
             DOMElements.logsContainer.innerHTML = '';
             DOMElements.failedNumbersTextarea.value = '';
             DOMElements.failureCount.textContent = '0';
+            // Disable configuration
+            [DOMElements.sendButton, DOMElements.channelSelect, DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.addNumberBtn, DOMElements.csvFileInput].forEach(el => el.disabled = true);
+            // Enable controls
+            DOMElements.pauseResumeButton.disabled = false;
+            DOMElements.stopButton.disabled = false;
         }
 
         function updateUIForPause() {
-            const button = DOMElements.pauseResumeButton;
-            button.innerHTML = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" /></svg>Resume`;
-            button.classList.remove('bg-yellow-500', 'hover:bg-yellow-600');
-            button.classList.add('bg-green-500', 'hover:bg-green-600');
+            DOMElements.pauseResumeButton.innerHTML = `Resume`;
+            DOMElements.pauseResumeButton.classList.replace('bg-yellow-500', 'bg-green-500');
+            DOMElements.pauseResumeButton.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
             DOMElements.statusMessage.textContent = 'Paused';
         }
 
         function updateUIForResume() {
-            const button = DOMElements.pauseResumeButton;
-            button.innerHTML = `<svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8 7a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1zm4 0a1 1 0 00-1 1v4a1 1 0 002 0V8a1 1 0 00-1-1z" clip-rule="evenodd" /></svg>Pause`;
-            button.classList.remove('bg-green-500', 'hover:bg-green-600');
-            button.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
+            DOMElements.pauseResumeButton.innerHTML = `Pause`;
+            DOMElements.pauseResumeButton.classList.replace('bg-green-500', 'bg-yellow-500');
+            DOMElements.pauseResumeButton.classList.replace('hover:bg-green-600', 'hover:bg-yellow-600');
             DOMElements.statusMessage.textContent = 'Running...';
         }
 
         function updateUIForCampaignEnd() {
-            DOMElements.sendButton.disabled = false;
+            DOMElements.statusMessage.textContent = campaign.state === 'stopped' ? 'Stopped' : 'Finished';
+            // Re-enable configuration
+            [DOMElements.sendButton, DOMElements.channelSelect, DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.addNumberBtn, DOMElements.csvFileInput].forEach(el => el.disabled = false);
+            // Disable controls
             DOMElements.pauseResumeButton.disabled = true;
             DOMElements.stopButton.disabled = true;
-            DOMElements.statusMessage.textContent = campaign.state === 'stopped' ? 'Stopped' : 'Finished';
-            updateUIForResume();
+            updateUIForResume(); // Reset pause button appearance
+        }
+
+        function resetCampaignState() {
+            if (campaign.timeoutId) clearTimeout(campaign.timeoutId);
+            campaign.state = 'idle';
+            campaign.failedNumbers = [];
+            campaign.currentIndex = 0;
+            campaign.sentCount = 0;
+            campaign.timeoutId = null;
         }
 
         function updateProgress() {
             DOMElements.sentCountEl.textContent = campaign.currentIndex;
-            const progress = (campaign.currentIndex / campaign.totalCount) * 100;
+            const progress = campaign.totalCount > 0 ? (campaign.currentIndex / campaign.totalCount) * 100 : 0;
             DOMElements.progressBar.style.width = `${progress}%`;
         }
 
@@ -457,95 +547,33 @@
             DOMElements.failedNumbersTextarea.value = campaign.failedNumbers.join('\n');
         }
 
-        function resetCampaignState() {
-            if (campaign.timeoutId) clearTimeout(campaign.timeoutId);
-            campaign = { ...campaign, state: 'idle', numbers: [], failedNumbers: [], currentIndex: 0, sentCount: 0, totalCount: 0, timeoutId: null };
-        }
-
-        // --- Input Handling & Validation ---
-        function getAndValidateNumbers() {
-            const manualNumbers = DOMElements.manualNumbersTextarea.value.split('\n').map(n => n.trim()).filter(Boolean);
-            const allNumbers = [...new Set([...campaign.numbers, ...manualNumbers])];
-
-            const validNumbers = allNumbers.filter(n => /^\+91[6-9]\d{9}$/.test(n));
-            const invalidNumbers = allNumbers.filter(n => !/^\+91[6-9]\d{9}$/.test(n));
-
-            DOMElements.numberCountFeedback.textContent = `Valid: ${validNumbers.length}, Invalid: ${invalidNumbers.length}`;
-            return { validNumbers, invalidNumbers };
-        }
-
-        function validateInputs(validNumbers) {
-            if (validNumbers.length === 0) {
-                addLog("Validation Error: No valid phone numbers found. Please use +91 format.", "error");
-                DOMElements.manualNumbersTextarea.classList.add('shake');
-                setTimeout(() => DOMElements.manualNumbersTextarea.classList.remove('shake'), 500);
-                return false;
-            }
-            if (!DOMElements.messageTextarea.value.trim() && !DOMElements.imageUrlInput.value.trim()) {
-                addLog("Validation Error: Message or Image URL cannot be empty.", "error");
-                DOMElements.messageTextarea.classList.add('shake');
-                return false;
-            }
-            return true;
-        }
-
-        function handleCsvUpload(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-            DOMElements.fileInfo.textContent = `File: ${file.name}`;
-
-            const reader = new FileReader();
-            reader.onload = (e) => {
-                const text = e.target.result;
-                const rows = text.split('\n').map(row => row.trim()).filter(Boolean);
-                const header = rows[0].split(',').map(h => h.trim().toLowerCase());
-                const phoneIndex = header.indexOf('phone');
-
-                if (phoneIndex === -1) {
-                    addLog("CSV Error: File must have a 'phone' column header.", "error"); return;
-                }
-                campaign.numbers = rows.slice(1).map(row => row.split(',')[phoneIndex]?.trim()).filter(Boolean);
-                addLog(`Loaded ${campaign.numbers.length} numbers from CSV.`, "success");
-                updateCostEstimator();
-            };
-            reader.readAsText(file);
-        }
-
-        // --- Cost Estimator ---
+        // --- Helpers & Utilities ---
         function calculateCost(numberCount) {
-            const channel = DOMElements.channelSelect.value;
-            const pricePerUnit = PRICING[channel] || 0;
+            const pricePerUnit = PRICING[DOMElements.channelSelect.value] || 0;
             return numberCount * pricePerUnit;
         }
 
         function updateCostEstimator() {
-            const { validNumbers } = getAndValidateNumbers();
-            if (validNumbers.length > 0) {
-                const totalCost = calculateCost(validNumbers.length);
-                DOMElements.estimatedCost.textContent = `₹${totalCost.toFixed(2)}`;
-                DOMElements.costEstimator.classList.remove('hidden');
-            } else {
-                DOMElements.costEstimator.classList.add('hidden');
-            }
+            const contactCount = campaign.contacts.size;
+            const totalCost = calculateCost(contactCount);
+            DOMElements.estimatedCost.textContent = `₹${totalCost.toFixed(2)}`;
         }
 
-        // --- Theming & Tabs ---
-        function initializeTheme() {
-            if (localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-                document.documentElement.classList.add('dark');
-                DOMElements.darkIcon.classList.remove('hidden');
-                DOMElements.lightIcon.classList.add('hidden');
-            } else {
-                DOMElements.lightIcon.classList.remove('hidden');
-                DOMElements.darkIcon.classList.add('hidden');
-            }
+        function toggleImageInputVisibility() {
+            const selectedChannel = DOMElements.channelSelect.value;
+            DOMElements.imageUrlContainer.style.display = (selectedChannel === 'sms' || selectedChannel === 'whatsapp') ? 'block' : 'none';
         }
 
-        function toggleTheme() {
-            const isDark = document.documentElement.classList.toggle('dark');
-            localStorage.theme = isDark ? 'dark' : 'light';
-            DOMElements.lightIcon.classList.toggle('hidden', isDark);
-            DOMElements.darkIcon.classList.toggle('hidden', !isDark);
+        function addLog(message, type = 'info') {
+            const p = document.createElement('p');
+            const typeClasses = {
+                error: 'text-red-500 dark:text-red-400',
+                success: 'text-green-600 dark:text-green-400',
+                warning: 'text-yellow-500 dark:text-yellow-400',
+            };
+            p.className = `text-sm ${typeClasses[type] || 'text-gray-600 dark:text-gray-300'}`;
+            p.innerHTML = `<span class="font-mono text-xs mr-2">[${new Date().toLocaleTimeString()}]</span> ${message}`;
+            DOMElements.logsContainer.prepend(p);
         }
 
         function switchTab(tab) {
@@ -562,18 +590,17 @@
             }
         }
 
-        // --- Utilities ---
-        function addLog(message, type = 'info') {
-            const logEntry = document.createElement('p');
-            const typeClasses = {
-                error: 'text-red-500 dark:text-red-400',
-                success: 'text-green-600 dark:text-green-400',
-                warning: 'text-yellow-500 dark:text-yellow-400',
-                info: 'text-gray-600 dark:text-gray-300'
-            };
-            logEntry.className = `text-sm ${typeClasses[type] || typeClasses.info}`;
-            logEntry.innerHTML = `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`;
-            DOMElements.logsContainer.prepend(logEntry);
+        function initializeTheme() {
+            const isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
+            document.documentElement.classList.toggle('dark', isDark);
+            DOMElements.lightIcon.classList.toggle('hidden', isDark);
+            DOMElements.darkIcon.classList.toggle('hidden', !isDark);
+        }
+
+        function toggleTheme() {
+            const isDark = document.documentElement.classList.toggle('dark');
+            localStorage.theme = isDark ? 'dark' : 'light';
+            initializeTheme();
         }
 
         // --- Start the App ---
