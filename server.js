@@ -5,18 +5,22 @@ const twilio = require('twilio');
 const rateLimit = require('express-rate-limit');
 
 const app = express();
-// Heroku & Render use the PORT environment variable
+// Render uses the PORT environment variable
 const port = process.env.PORT || 3000;
 
+// --- CRITICAL FIX: Trust the Render Proxy ---
+// This tells Express to trust the 'X-Forwarded-For' header set by Render's proxy.
+// This is necessary for the rate limiter to correctly identify the user's IP.
+app.set('trust proxy', 1);
+
 // --- Security: CORS Configuration ---
-// This is a critical security update. We will only allow requests from your specific
-// frontend application URL, which you will set in your Render environment variables.
+// Only allow requests from your specific frontend application URL.
 const frontendUrl = process.env.FRONTEND_URL;
 if (!frontendUrl) {
     console.warn("WARNING: FRONTEND_URL is not set. For production, this is a security risk.");
 }
 const corsOptions = {
-    origin: frontendUrl || "http://localhost:5500", // Fallback for local dev, but production needs the env var.
+    origin: frontendUrl || "http://127.0.0.1:5500", // Fallback for local dev
 };
 app.use(cors(corsOptions));
 
@@ -26,7 +30,6 @@ app.use(express.json());
 
 
 // --- Security: Rate Limiting ---
-// Apply a rate limit to the /send endpoint to prevent abuse.
 const limiter = rateLimit({
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100, // Limit each IP to 100 requests per window
@@ -50,11 +53,15 @@ const client = twilio(accountSid, authToken);
 
 // --- Main Sending Endpoint ---
 app.post('/send', limiter, async (req, res) => {
-    const { channel, recipient, message } = req.body;
+    // Destructure imageUrl along with other fields
+    const { channel, recipient, message, imageUrl } = req.body;
 
-    // 1. Robust Input Validation
-    if (!channel || !recipient || !message) {
-        return res.status(400).json({ error: 'Missing required fields: channel, recipient, or message.' });
+    // 1. Updated Input Validation
+    if (!channel || !recipient) {
+        return res.status(400).json({ error: 'Missing required fields: channel or recipient.' });
+    }
+    if (!message && !imageUrl) {
+        return res.status(400).json({ error: 'A message or an image URL is required.' });
     }
 
     const e164Regex = /^\+[1-9]\d{1,14}$/;
@@ -76,18 +83,21 @@ app.post('/send', limiter, async (req, res) => {
                 fromAddress = `whatsapp:${twilioWhatsAppSender}`;
                 break;
             default:
-                return res.status(400).json({ error: 'Invalid channel specified. Must be sms, whatsapp, or call.' });
+                return res.status(400).json({ error: 'Invalid channel specified.' });
         }
 
-        // 3. Execute the API call
+        // 3. Execute the API call, passing imageUrl to helpers
         switch (channel) {
             case 'sms':
-                result = await sendSms(fromAddress, recipient, message);
+                result = await sendSms(fromAddress, recipient, message, imageUrl);
                 break;
             case 'whatsapp':
-                result = await sendWhatsApp(fromAddress, recipient, message);
+                result = await sendWhatsApp(fromAddress, recipient, message, imageUrl);
                 break;
             case 'call':
+                if (imageUrl) { // Calls cannot have images
+                    return res.status(400).json({ error: 'Cannot send an image with a voice call.' });
+                }
                 result = await makeVoiceCall(fromAddress, recipient, message);
                 break;
         }
@@ -96,31 +106,36 @@ app.post('/send', limiter, async (req, res) => {
         res.status(200).json({ success: true, sid: result.sid });
 
     } catch (error) {
-        // 4. Improved Error Handling
         console.error(`Twilio API Error for ${recipient}:`, error.message);
         res.status(error.status || 500).json({ error: `Twilio Error: ${error.message}` });
     }
 });
 
 
-// --- Twilio Helper Functions ---
+// --- Updated Twilio Helper Functions ---
 
-async function sendSms(from, to, body) {
-    return client.messages.create({ body, from, to });
+async function sendSms(from, to, body, imageUrl) {
+    const messageData = { from, to };
+    if (body) messageData.body = body;
+    if (imageUrl) messageData.mediaUrl = [imageUrl];
+    return client.messages.create(messageData);
 }
 
-async function sendWhatsApp(from, to, body) {
-    return client.messages.create({ from, body, to: `whatsapp:${to}` });
+async function sendWhatsApp(from, to, body, imageUrl) {
+    const messageData = { from, to: `whatsapp:${to}` };
+    if (body) messageData.body = body;
+    if (imageUrl) messageData.mediaUrl = [imageUrl];
+    return client.messages.create(messageData);
 }
 
 async function makeVoiceCall(from, to, textToSay) {
     const twiml = new twilio.twiml.VoiceResponse();
-    twiml.say({ voice: 'Polly.Aditi' }, textToSay); // Using a more natural-sounding Polly voice for Indian accent
+    twiml.say({ voice: 'Polly.Aditi' }, textToSay); // Using a Polly voice for Indian accent
     twiml.hangup();
     return client.calls.create({ twiml: twiml.toString(), to, from });
 }
 
 app.listen(port, () => {
-    console.log(`Advanced messaging server listening at http://localhost:${port}`);
+    console.log(`Advanced messaging server listening on port ${port}`);
 });
 

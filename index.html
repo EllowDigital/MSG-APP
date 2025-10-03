@@ -97,6 +97,16 @@
                     <textarea id="message" rows="4"
                         class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
                         placeholder="Enter your message here..."></textarea>
+
+                    <!-- New Image URL Input -->
+                    <div id="image-url-container" class="mt-4">
+                        <label for="image-url"
+                            class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Optional: Image URL
+                            (for SMS/WhatsApp)</label>
+                        <input type="text" id="image-url"
+                            class="w-full p-3 bg-white dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring"
+                            placeholder="https://example.com/image.png">
+                    </div>
                 </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2 flex items-center">
@@ -135,8 +145,8 @@
                 <div id="cost-estimator" class="p-4 bg-gray-50 dark:bg-gray-700 rounded-md text-center hidden">
                     <p class="font-medium">Estimated Campaign Cost: <span id="estimated-cost"
                             class="text-indigo-600 dark:text-indigo-400 font-bold">₹0.00</span></p>
-                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Based on standard India pricing. Actual
-                        cost may vary.</p>
+                    <p class="text-xs text-gray-500 dark:text-gray-400 mt-1">Based on standard India pricing. MMS/Media
+                        messages may cost more.</p>
                 </div>
             </div>
 
@@ -203,9 +213,8 @@
 
     <script>
         // --- CONFIGURATION ---
-        // IMPORTANT: Replace this with your DEPLOYED Render server URL.
         const API_ENDPOINT = 'https://my-bulk-messaging-server.onrender.com/send';
-        const PRICING = { // Estimated costs in INR per message/minute in India
+        const PRICING = {
             sms: 0.50,
             whatsapp: 0.45,
             call: 1.00
@@ -220,6 +229,8 @@
         const DOMElements = {
             channelSelect: document.getElementById('channel'),
             messageTextarea: document.getElementById('message'),
+            imageUrlInput: document.getElementById('image-url'), // New
+            imageUrlContainer: document.getElementById('image-url-container'), // New
             csvFileInput: document.getElementById('csvFile'),
             manualNumbersTextarea: document.getElementById('manual-numbers'),
             sendButton: document.getElementById('send-button'),
@@ -250,7 +261,7 @@
 
         // --- State ---
         let campaign = {
-            state: 'idle', // idle, running, paused, finished, stopped
+            state: 'idle',
             numbers: [],
             failedNumbers: [],
             currentIndex: 0,
@@ -264,6 +275,7 @@
             setupEventListeners();
             initializeTheme();
             populateChannelSelect();
+            toggleImageInputVisibility(); // Initial check
         }
 
         function populateChannelSelect() {
@@ -284,8 +296,19 @@
                 el.addEventListener('input', updateCostEstimator);
                 el.addEventListener('change', updateCostEstimator);
             });
+            DOMElements.channelSelect.addEventListener('change', toggleImageInputVisibility); // Toggle on change
             DOMElements.tabLogs.addEventListener('click', () => switchTab('logs'));
             DOMElements.tabFailures.addEventListener('click', () => switchTab('failures'));
+        }
+
+        // --- NEW: Toggle Image URL input based on channel ---
+        function toggleImageInputVisibility() {
+            const selectedChannel = DOMElements.channelSelect.value;
+            if (selectedChannel === 'sms' || selectedChannel === 'whatsapp') {
+                DOMElements.imageUrlContainer.style.display = 'block';
+            } else {
+                DOMElements.imageUrlContainer.style.display = 'none';
+            }
         }
 
         // --- Core Campaign Logic ---
@@ -314,20 +337,25 @@
 
         async function sendNextMessage() {
             if (campaign.currentIndex >= campaign.totalCount || campaign.state === 'stopped' || campaign.state === 'finished') {
-                finishCampaign();
-                return;
+                finishCampaign(); return;
             }
             if (campaign.state === 'paused') return;
 
             const number = campaign.numbers[campaign.currentIndex];
             const channel = DOMElements.channelSelect.value;
             const message = DOMElements.messageTextarea.value;
+            const imageUrl = DOMElements.imageUrlInput.value.trim(); // Get image URL
 
             try {
+                const payload = { channel, message, recipient: number };
+                if (imageUrl) {
+                    payload.imageUrl = imageUrl;
+                }
+
                 const response = await fetch(API_ENDPOINT, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ channel, message, recipient: number }),
+                    body: JSON.stringify(payload),
                 });
 
                 const result = await response.json();
@@ -415,7 +443,7 @@
             DOMElements.pauseResumeButton.disabled = true;
             DOMElements.stopButton.disabled = true;
             DOMElements.statusMessage.textContent = campaign.state === 'stopped' ? 'Stopped' : 'Finished';
-            updateUIForResume(); // Reset pause button to default state
+            updateUIForResume();
         }
 
         function updateProgress() {
@@ -453,10 +481,9 @@
                 setTimeout(() => DOMElements.manualNumbersTextarea.classList.remove('shake'), 500);
                 return false;
             }
-            if (!DOMElements.messageTextarea.value.trim()) {
-                addLog("Validation Error: Message cannot be empty.", "error");
+            if (!DOMElements.messageTextarea.value.trim() && !DOMElements.imageUrlInput.value.trim()) {
+                addLog("Validation Error: Message or Image URL cannot be empty.", "error");
                 DOMElements.messageTextarea.classList.add('shake');
-                setTimeout(() => DOMElements.messageTextarea.classList.remove('shake'), 500);
                 return false;
             }
             return true;
