@@ -13,10 +13,13 @@ app.use(express.json());
 // --- Twilio Client Initialization ---
 const accountSid = process.env.TWILIO_ACCOUNT_SID;
 const authToken = process.env.TWILIO_AUTH_TOKEN;
-const twilioPhoneNumber = process.env.TWILIO_PHONE_NUMBER;
 
-if (!accountSid || !authToken || !twilioPhoneNumber) {
-    console.error("Twilio credentials are not set in the .env file.");
+// Load BOTH the SMS number and the WhatsApp sender from environment variables
+const twilioSmsNumber = process.env.TWILIO_SMS_NUMBER;
+const twilioWhatsAppSender = process.env.TWILIO_WHATSAPP_SENDER;
+
+if (!accountSid || !authToken || !twilioSmsNumber || !twilioWhatsAppSender) {
+    console.error("Crucial Twilio credentials are not set in the environment variables.");
     process.exit(1);
 }
 const client = twilio(accountSid, authToken);
@@ -32,19 +35,34 @@ app.post('/send', async (req, res) => {
 
     try {
         let result;
+        // 1. Define the 'from' number based on the channel
+        let fromAddress;
         switch (channel) {
             case 'sms':
-                result = await sendSms(recipient, message);
+            case 'call': // Calls will also originate from your SMS-capable number
+                fromAddress = twilioSmsNumber;
                 break;
             case 'whatsapp':
-                result = await sendWhatsApp(recipient, message);
-                break;
-            case 'call':
-                result = await makeVoiceCall(recipient, message);
+                // For WhatsApp, we must add the 'whatsapp:' prefix
+                fromAddress = `whatsapp:${twilioWhatsAppSender}`;
                 break;
             default:
                 return res.status(400).json({ error: 'Invalid channel specified.' });
         }
+
+        // 2. Use the dynamic 'from' variable in the API call
+        switch (channel) {
+            case 'sms':
+                result = await sendSms(fromAddress, recipient, message);
+                break;
+            case 'whatsapp':
+                result = await sendWhatsApp(fromAddress, recipient, message);
+                break;
+            case 'call':
+                result = await makeVoiceCall(fromAddress, recipient, message);
+                break;
+        }
+
         console.log(`Message sent/initiated via ${channel} to ${recipient}. SID: ${result.sid}`);
         res.status(200).json({ success: true, sid: result.sid });
     } catch (error) {
@@ -55,41 +73,25 @@ app.post('/send', async (req, res) => {
 
 
 // --- Twilio Helper Functions ---
+// Note: They now accept a 'from' parameter
 
-/**
- * Sends an SMS message.
- * @param {string} to - The recipient's phone number in E.164 format.
- * @param {string} body - The message content.
- */
-async function sendSms(to, body) {
+async function sendSms(from, to, body) {
     return client.messages.create({
         body: body,
-        from: twilioPhoneNumber,
+        from: from,
         to: to
     });
 }
 
-/**
- * Sends a WhatsApp message.
- * Note: Requires an approved WhatsApp template for business-initiated messages
- * or the recipient must have contacted you in the last 24 hours.
- * @param {string} to - The recipient's phone number in E.164 format.
- * @param {string} body - The message content.
- */
-async function sendWhatsApp(to, body) {
+async function sendWhatsApp(from, to, body) {
     return client.messages.create({
-        from: `whatsapp:${twilioPhoneNumber}`,
+        from: from,
         body: body,
         to: `whatsapp:${to}`
     });
 }
 
-/**
- * Initiates a voice call that reads out a message.
- * @param {string} to - The recipient's phone number in E.164 format.
- * @param {string} textToSay - The message to be converted to speech.
- */
-async function makeVoiceCall(to, textToSay) {
+async function makeVoiceCall(from, to, textToSay) {
     const twiml = new twilio.twiml.VoiceResponse();
     twiml.say({ voice: 'alice' }, textToSay);
     twiml.hangup();
@@ -97,7 +99,7 @@ async function makeVoiceCall(to, textToSay) {
     return client.calls.create({
         twiml: twiml.toString(),
         to: to,
-        from: twilioPhoneNumber
+        from: from
     });
 }
 
