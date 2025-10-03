@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bulk Messaging Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-100 text-gray-800">
+
+    <div class="container mx-auto p-4 sm:p-6 md:p-8 max-w-4xl">
+        <header class="mb-8">
+            <h1 class="text-3xl font-bold text-gray-900">Messaging Campaign Sender</h1>
+            <p class="text-gray-600 mt-1">Send SMS, WhatsApp messages, and voice calls to your audience.</p>
+        </header>
+
+        <div class="bg-white p-6 rounded-lg shadow-md">
+            <!-- Channel Selection -->
+            <div class="mb-6">
+                <label for="channel" class="block text-sm font-medium text-gray-700 mb-2">1. Select Channel</label>
+                <select id="channel" name="channel"
+                    class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500">
+                    <option value="sms">SMS</option>
+                    <option value="whatsapp">WhatsApp</option>
+                    <option value="call">Voice Call</option>
+                </select>
+            </div>
+
+            <!-- Message Input -->
+            <div class="mb-6">
+                <label for="message" class="block text-sm font-medium text-gray-700 mb-2">2. Compose Your
+                    Message</label>
+                <textarea id="message" name="message" rows="4"
+                    class="w-full p-3 border border-gray-300 rounded-md shadow-sm focus:ring-indigo-500 focus:border-indigo-500"
+                    placeholder="Enter your message here... For voice calls, this text will be read out."></textarea>
+            </div>
+
+            <!-- Contacts Input -->
+            <div class="mb-6">
+                <label class="block text-sm font-medium text-gray-700 mb-2">3. Add Contacts</label>
+                <div class="p-4 border-2 border-dashed border-gray-300 rounded-md text-center">
+                    <input type="file" id="csvFile" accept=".csv" class="hidden">
+                    <button onclick="document.getElementById('csvFile').click()"
+                        class="bg-gray-200 text-gray-700 font-semibold py-2 px-4 rounded-md hover:bg-gray-300 transition">
+                        Upload CSV File
+                    </button>
+                    <p id="file-info" class="text-sm text-gray-500 mt-2">Upload a CSV with a 'phone' column.</p>
+                </div>
+                <textarea id="manual-numbers" class="w-full mt-4 p-3 border border-gray-300 rounded-md shadow-sm"
+                    rows="3" placeholder="Or paste numbers here, one per line (e.g., +919876543210)"></textarea>
+            </div>
+
+            <!-- Send Button -->
+            <div>
+                <button id="send-button"
+                    class="w-full bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition disabled:bg-indigo-300">
+                    Start Campaign
+                </button>
+            </div>
+        </div>
+
+        <!-- Status Section -->
+        <div id="status-container" class="mt-8 bg-white p-6 rounded-lg shadow-md hidden">
+            <h2 class="text-xl font-semibold mb-4">Campaign Status</h2>
+            <div class="space-y-3">
+                <p><strong>Status:</strong> <span id="status-message">Idle</span></p>
+                <div class="w-full bg-gray-200 rounded-full h-2.5">
+                    <div id="progress-bar" class="bg-indigo-600 h-2.5 rounded-full" style="width: 0%"></div>
+                </div>
+                <p><span id="sent-count">0</span> / <span id="total-count">0</span> messages sent.</p>
+            </div>
+            <div id="logs" class="mt-4 bg-gray-50 p-3 rounded-md h-40 overflow-y-auto border">
+                <!-- Log messages will appear here -->
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const channelSelect = document.getElementById('channel');
+        const messageTextarea = document.getElementById('message');
+        const csvFileInput = document.getElementById('csvFile');
+        const manualNumbersTextarea = document.getElementById('manual-numbers');
+        const sendButton = document.getElementById('send-button');
+        const fileInfo = document.getElementById('file-info');
+
+        const statusContainer = document.getElementById('status-container');
+        const statusMessage = document.getElementById('status-message');
+        const progressBar = document.getElementById('progress-bar');
+        const sentCountEl = document.getElementById('sent-count');
+        const totalCountEl = document.getElementById('total-count');
+        const logsContainer = document.getElementById('logs');
+
+        let phoneNumbers = [];
+
+        csvFileInput.addEventListener('change', (event) => {
+            const file = event.target.files[0];
+            if (!file) return;
+
+            fileInfo.textContent = `File: ${file.name}`;
+
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                const text = e.target.result;
+                const rows = text.split('\n').map(row => row.trim()).filter(Boolean);
+                const header = rows[0].split(',').map(h => h.trim().toLowerCase());
+                const phoneIndex = header.indexOf('phone');
+
+                if (phoneIndex === -1) {
+                    addLog("Error: CSV must have a 'phone' column.", "error");
+                    return;
+                }
+
+                phoneNumbers = rows.slice(1).map(row => {
+                    const values = row.split(',');
+                    return values[phoneIndex].trim();
+                }).filter(Boolean);
+
+                addLog(`Loaded ${phoneNumbers.length} numbers from CSV.`, "success");
+            };
+            reader.readAsText(file);
+        });
+
+        sendButton.addEventListener('click', async () => {
+            const channel = channelSelect.value;
+            const message = messageTextarea.value;
+            const manualNumbers = manualNumbersTextarea.value.split('\n').map(n => n.trim()).filter(Boolean);
+
+            const allNumbers = [...new Set([...phoneNumbers, ...manualNumbers])];
+
+            if (allNumbers.length === 0) {
+                addLog("Error: No phone numbers to send to.", "error");
+                return;
+            }
+            if (!message) {
+                addLog("Error: Message cannot be empty.", "error");
+                return;
+            }
+
+            // Basic validation for Indian phone numbers, can be improved
+            const validNumbers = allNumbers.filter(n => /^\+91[6-9]\d{9}$/.test(n));
+            const invalidNumbers = allNumbers.filter(n => !/^\+91[6-9]\d{9}$/.test(n));
+
+            if (invalidNumbers.length > 0) {
+                addLog(`Warning: Found ${invalidNumbers.length} invalid numbers (must be in +91XXXXXXXXXX format). They will be skipped.`, 'warning');
+            }
+
+            if (validNumbers.length === 0) {
+                addLog("Error: No valid phone numbers to send to. Please use +91 format.", "error");
+                return;
+            }
+
+
+            initiateCampaign(channel, message, validNumbers);
+        });
+
+        function addLog(message, type = 'info') {
+            const logEntry = document.createElement('p');
+            let colorClass = 'text-gray-600';
+            if (type === 'error') colorClass = 'text-red-500';
+            if (type === 'success') colorClass = 'text-green-600';
+            if (type === 'warning') colorClass = 'text-yellow-600';
+            logEntry.className = `text-sm ${colorClass}`;
+            logEntry.innerHTML = `<strong>[${new Date().toLocaleTimeString()}]</strong> ${message}`;
+            logsContainer.prepend(logEntry);
+        }
+
+        async function initiateCampaign(channel, message, numbers) {
+            sendButton.disabled = true;
+            sendButton.textContent = 'Campaign in Progress...';
+            statusContainer.classList.remove('hidden');
+            statusMessage.textContent = 'Starting...';
+            sentCountEl.textContent = '0';
+            totalCountEl.textContent = numbers.length;
+            progressBar.style.width = '0%';
+            logsContainer.innerHTML = '';
+            addLog(`Starting campaign for ${numbers.length} numbers via ${channel.toUpperCase()}.`);
+
+            const totalNumbers = numbers.length;
+            let sentCount = 0;
+
+            const delay = 500; // 0.5 second delay between requests for demo
+
+            for (const number of numbers) {
+                try {
+                    // Replace with your DEPLOYED backend server URL in Phase 5
+                    const response = await fetch('http://localhost:3000/send', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            channel,
+                            message,
+                            recipient: number,
+                        }),
+                    });
+
+                    const result = await response.json();
+
+                    if (response.ok) {
+                        sentCount++;
+                        addLog(`Successfully sent to ${number}. SID: ${result.sid}`, 'success');
+                    } else {
+                        throw new Error(result.error || 'Unknown error');
+                    }
+                } catch (error) {
+                    addLog(`Failed to send to ${number}. Reason: ${error.message}`, 'error');
+                }
+
+                // Update UI
+                sentCountEl.textContent = sentCount;
+                progressBar.style.width = `${(sentCount / totalNumbers) * 100}%`;
+                statusMessage.textContent = 'Sending...';
+
+                // Wait before sending the next one
+                await new Promise(resolve => setTimeout(resolve, delay));
+            }
+
+            statusMessage.textContent = 'Campaign Finished';
+            sendButton.disabled = false;
+            sendButton.textContent = 'Start Campaign';
+            addLog(`Campaign finished. Successfully sent to ${sentCount} out of ${totalNumbers}.`, 'info');
+        }
+
+    </script>
+
+</body>
+
+</html>
