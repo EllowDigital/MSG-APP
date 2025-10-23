@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" class="light">
+<html lang="en" class="light scroll-smooth">
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale-1.0">
     <title>Advanced Messaging Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -118,11 +118,12 @@
     </style>
 </head>
 
-<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
+<body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 antialiased">
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
         <!-- Header -->
-        <header class="mb-8 pb-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
+        <header
+            class="sticky top-0 z-40 bg-gray-50/70 dark:bg-gray-900/70 backdrop-blur-lg -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-6 border-b border-gray-200 dark:border-gray-700/50 flex justify-between items-center">
             <div class="flex items-center gap-3 sm:gap-4">
                 <div class="bg-indigo-100 dark:bg-indigo-900/50 p-3 rounded-lg">
                     <svg xmlns="http://www.w3.org/2000/svg"
@@ -149,18 +150,18 @@
             </button>
         </header>
 
-        <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
+        <main class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start pt-8">
 
-            <div class="lg:col-span-2 space-y-8">
+            <div class="lg:col-span-3 space-y-8">
                 <!-- Step 1: Compose Campaign -->
                 <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3 mb-5">
+                    class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-4 mb-6">
                         <span
-                            class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold">1</span>
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Compose Campaign</h2>
+                            class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold text-lg">1</span>
+                        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Compose Campaign</h2>
                     </div>
-                    <div class="space-y-4">
+                    <div class="space-y-5">
                         <!-- Channel Selector -->
                         <div>
                             <label for="channel"
@@ -170,7 +171,7 @@
                         </div>
 
                         <!-- SMS/WhatsApp Options -->
-                        <div id="sms-whatsapp-options-container" class="space-y-4">
+                        <div id="sms-whatsapp-options-container" class="space-y-5">
                             <div>
                                 <label for="message"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
@@ -189,7 +190,7 @@
                         </div>
 
                         <!-- Voice Call Options -->
-                        <div id="voice-call-options-container" class="hidden space-y-4">
+                        <div id="voice-call-options-container" class="hidden space-y-5">
                             <div>
                                 <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Call Content
                                     Type</label>
@@ -222,7 +223,7 @@
                             </div>
 
                             <!-- 2. Audio File Container -->
-                            <div id="audio-container" class="hidden space-y-4">
+                            <div id="audio-container" class="hidden space-y-5">
                                 <div>
                                     <label for="audio-url"
                                         class="block text-sm font-medium text-gray-700 dark:text-gray-300">Public Audio
@@ -236,9 +237,8 @@
                                     class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 space-y-4">
                                     <h4 class="text-sm font-medium text-gray-600 dark:text-gray-300">Upload Audio File
                                     </h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Use the tools below to record or
-                                        select an audio file. It will be automatically uploaded to Cloudinary and the
-                                        URL will be filled in above.</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Record or select an audio file.
+                                        It will be automatically uploaded and the URL filled above.</p>
 
                                     <audio id="audio-preview" controls class="w-full"></audio>
 
@@ -256,14 +256,14 @@
                                         <label
                                             class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Record
                                             live:</label>
-                                        <div class="flex items-center gap-3">
+                                        <div class="flex items-center flex-wrap gap-3">
                                             <button id="record-button"
-                                                class="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 focus-ring">
+                                                class="flex items-center justify-center gap-2 flex-grow sm:flex-grow-0 px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 focus-ring">
                                                 <div class="recording-dot w-2 h-2 bg-white rounded-full"></div>
                                                 <span>Record</span>
                                             </button>
                                             <button id="stop-record-button"
-                                                class="w-full sm:w-auto px-4 py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 focus-ring"
+                                                class="flex-grow sm:flex-grow-0 px-4 py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 focus-ring"
                                                 disabled>Stop</button>
                                             <span id="record-timer"
                                                 class="text-sm font-mono text-gray-700 dark:text-gray-300">00:00</span>
@@ -284,13 +284,13 @@
 
                 <!-- Step 2: Add Contacts -->
                 <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3 mb-5">
+                    class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-4 mb-6">
                         <span
-                            class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold">2</span>
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Add Contacts</h2>
+                            class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold text-lg">2</span>
+                        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Add Contacts</h2>
                     </div>
-                    <div class="space-y-4">
+                    <div class="space-y-5">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Add Number
                                 Manually</label>
@@ -304,7 +304,7 @@
                                         placeholder="9876543210">
                                 </div>
                                 <button id="add-number-btn"
-                                    class="w-full sm:w-auto px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus-ring flex items-center justify-center gap-2">
+                                    class="w-full sm:w-auto flex-shrink-0 px-4 py-2 bg-indigo-600 text-white font-semibold rounded-md hover:bg-indigo-700 focus-ring flex items-center justify-center gap-2">
                                     <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                         fill="currentColor">
                                         <path fill-rule="evenodd"
@@ -326,7 +326,7 @@
                         </div>
 
                         <div id="csv-dropzone"
-                            class="relative p-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-center cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 transition-colors"
+                            class="relative p-6 border-2 border-dashed border-gray-300 dark:border-gray-600 rounded-lg text-center cursor-pointer hover:border-indigo-500 dark:hover:border-indigo-400 hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors"
                             onclick="document.getElementById('csvFile').click()">
                             <input type="file" id="csvFile" accept=".csv" class="hidden">
                             <div class="flex flex-col items-center justify-center text-gray-500 dark:text-gray-400">
@@ -355,11 +355,11 @@
 
                 <!-- Step 3: Configure & Launch -->
                 <div
-                    class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
-                    <div class="flex items-center gap-3 mb-5">
+                    class="bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700">
+                    <div class="flex items-center gap-4 mb-6">
                         <span
-                            class="flex items-center justify-center w-8 h-8 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold">3</span>
-                        <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Configure & Launch</h2>
+                            class="flex items-center justify-center w-10 h-10 rounded-full bg-indigo-100 dark:bg-indigo-900 text-indigo-600 dark:text-indigo-300 font-bold text-lg">3</span>
+                        <h2 class="text-2xl font-semibold text-gray-900 dark:text-white">Configure & Launch</h2>
                     </div>
                     <div>
                         <label class="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-2">Sending
@@ -381,7 +381,7 @@
                     </div>
                     <div class="mt-6 space-y-3">
                         <button id="send-button"
-                            class="flex items-center justify-center w-full gap-2 bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed focus-ring">
+                            class="w-full flex items-center justify-center w-full gap-2 bg-indigo-600 text-white font-bold py-3 px-4 rounded-md hover:bg-indigo-700 transition disabled:bg-indigo-400 disabled:cursor-not-allowed focus-ring">
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                 fill="currentColor">
                                 <path
@@ -389,9 +389,9 @@
                             </svg>
                             <span>Start Campaign</span>
                         </button>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                        <div class="grid grid-cols-2 gap-3">
                             <button id="pause-resume-button"
-                                class="flex items-center justify-center w-full gap-2 bg-yellow-500 text-white font-bold py-3 px-4 rounded-md hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed focus-ring"
+                                class="w-full flex items-center justify-center w-full gap-2 bg-yellow-500 text-white font-bold py-3 px-4 rounded-md hover:bg-yellow-600 transition disabled:opacity-50 disabled:cursor-not-allowed focus-ring"
                                 disabled>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                     fill="currentColor">
@@ -402,7 +402,7 @@
                                 <span>Pause</span>
                             </button>
                             <button id="stop-button"
-                                class="flex items-center justify-center w-full gap-2 bg-red-600 text-white font-bold py-3 px-4 rounded-md hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed focus-ring"
+                                class="w-full flex items-center justify-center w-full gap-2 bg-red-600 text-white font-bold py-3 px-4 rounded-md hover:bg-red-700 transition disabled:opacity-50 disabled:cursor-not-allowed focus-ring"
                                 disabled>
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20"
                                     fill="currentColor">
@@ -419,8 +419,8 @@
 
             <!-- Status Container -->
             <div id="status-container"
-                class="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 lg:sticky lg:top-8">
-                <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Live Campaign Status</h2>
+                class="lg:col-span-2 bg-white dark:bg-gray-800 p-6 sm:p-8 rounded-2xl shadow-lg border border-gray-200 dark:border-gray-700 lg:sticky lg:top-32">
+                <h2 class="text-2xl font-semibold mb-4 text-gray-900 dark:text-white">Live Campaign Status</h2>
                 <div class="border-b border-gray-200 dark:border-gray-700 mb-4">
                     <nav class="-mb-px flex space-x-4 sm:space-x-6" aria-label="Tabs">
                         <button id="tab-logs"
@@ -444,7 +444,7 @@
                                 id="total-count">0</span> messages processed.</p>
                     </div>
                     <div id="logs"
-                        class="mt-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-md h-80 sm:h-96 overflow-y-auto border border-gray-200 dark:border-gray-700">
+                        class="mt-4 bg-gray-50 dark:bg-gray-900/50 p-3 rounded-md h-80 sm:h-96 overflow-y-auto border border-gray-200 dark:border-gray-700 scroll-smooth">
                     </div>
                 </div>
                 <div id="tab-content-failures" class="hidden">
@@ -549,6 +549,7 @@
         let mediaRecorder;
         let audioChunks = [];
         let recordTimerInterval;
+        let recordTimeout; // To store the 30-second timeout
 
         // --- Initialization ---
         function initialize() {
@@ -698,30 +699,50 @@
                 DOMElements.stopRecordButton.disabled = false;
                 DOMElements.audioFilePicker.disabled = true;
                 startRecordTimer();
-                addLog("Recording started...", "info");
+
+                // *** ADDED: Auto-stop after 30 seconds ***
+                recordTimeout = setTimeout(() => {
+                    addLog("Recording automatically stopping after 30 seconds.", "warning");
+                    stopRecording();
+                }, 30000); // 30,000 milliseconds = 30 seconds
+
+                addLog("Recording started... (max 30 seconds)", "info");
             } catch (err) {
                 addLog("Error starting recording: " + err.message, "error");
             }
         }
+
         function stopRecording() {
             if (mediaRecorder && mediaRecorder.state !== 'inactive') {
                 mediaRecorder.stop();
+            }
+            // Clear the 30-second timeout if stop is pressed manually
+            if (recordTimeout) {
+                clearTimeout(recordTimeout);
+                recordTimeout = null;
             }
             DOMElements.recordButton.disabled = false;
             DOMElements.stopRecordButton.disabled = true;
             DOMElements.audioFilePicker.disabled = false;
             stopRecordTimer();
         }
+
         function startRecordTimer() {
             let seconds = 0;
             DOMElements.recordTimer.textContent = '00:00';
             recordTimerInterval = setInterval(() => {
                 seconds++;
+                // *** ADDED: Check for 30 second limit in timer display ***
+                if (seconds > 30) {
+                    stopRecordTimer();
+                    return;
+                }
                 const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
                 const secs = (seconds % 60).toString().padStart(2, '0');
                 DOMElements.recordTimer.textContent = `${mins}:${secs}`;
             }, 1000);
         }
+
         function stopRecordTimer() {
             clearInterval(recordTimerInterval);
         }
