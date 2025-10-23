@@ -12,7 +12,6 @@
             font-family: 'Inter', sans-serif;
         }
 
-        /* A more subtle focus ring for accessibility */
         .focus-ring {
             @apply focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 dark:focus:ring-offset-gray-900;
         }
@@ -45,7 +44,6 @@
             }
         }
 
-        /* Custom scrollbar for a cleaner look */
         ::-webkit-scrollbar {
             width: 8px;
         }
@@ -56,7 +54,6 @@
 
         ::-webkit-scrollbar-thumb {
             background-color: #a0aec0;
-            /* gray-400 */
             border-radius: 10px;
             border: 2px solid transparent;
             background-clip: content-box;
@@ -64,7 +61,57 @@
 
         html.dark ::-webkit-scrollbar-thumb {
             background-color: #4a5568;
+        }
+
+        .recording-dot {
+            width: 10px;
+            height: 10px;
+            background-color: #ef4444;
+            /* red-500 */
+            border-radius: 50%;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.3;
+            }
+        }
+
+        /* Style for the file input button */
+        input[type="file"]::file-selector-button {
+            @apply px-3 py-2 text-sm font-semibold bg-indigo-50 dark:bg-gray-700 text-indigo-700 dark:text-indigo-300 border border-indigo-200 dark:border-gray-600 rounded-md cursor-pointer hover:bg-indigo-100 dark:hover:bg-gray-600;
+        }
+
+        /* Loading spinner */
+        .spinner {
+            border: 2px solid #e5e7eb;
+            /* gray-200 */
+            border-top-color: #4f46e5;
+            /* indigo-600 */
+            border-radius: 50%;
+            width: 1rem;
+            height: 1rem;
+            animation: spin 1s linear infinite;
+        }
+
+        html.dark .spinner {
+            border-color: #4b5563;
             /* gray-600 */
+            border-top-color: #818cf8;
+            /* indigo-400 */
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -72,6 +119,7 @@
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300">
 
     <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+        <!-- Header -->
         <header class="mb-8 pb-6 border-b border-gray-200 dark:border-gray-700 flex justify-between items-center">
             <div class="flex items-center gap-3 sm:gap-4">
                 <div class="bg-indigo-100 dark:bg-indigo-900/50 p-3 rounded-lg">
@@ -102,6 +150,7 @@
         <main class="grid grid-cols-1 lg:grid-cols-3 gap-8 items-start">
 
             <div class="lg:col-span-2 space-y-8">
+                <!-- Step 1: Compose Campaign -->
                 <div
                     class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-3 mb-5">
@@ -110,30 +159,128 @@
                         <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Compose Campaign</h2>
                     </div>
                     <div class="space-y-4">
+                        <!-- Channel Selector -->
                         <div>
                             <label for="channel"
                                 class="block text-sm font-medium text-gray-700 dark:text-gray-300">Channel</label>
                             <select id="channel"
                                 class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"></select>
                         </div>
-                        <div>
-                            <label for="message"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
-                            <textarea id="message" rows="4"
-                                class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder="Enter your message..."></textarea>
+
+                        <!-- SMS/WhatsApp Options -->
+                        <div id="sms-whatsapp-options-container" class="space-y-4">
+                            <div>
+                                <label for="message"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message</label>
+                                <textarea id="message" rows="4"
+                                    class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="Enter your message..."></textarea>
+                            </div>
+                            <div>
+                                <label for="image-url"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">Optional Image
+                                    URL</label>
+                                <input type="text" id="image-url"
+                                    class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="https://example.com/image.png">
+                            </div>
                         </div>
-                        <div id="image-url-container">
-                            <label for="image-url"
-                                class="block text-sm font-medium text-gray-700 dark:text-gray-300">Optional Image
-                                URL</label>
-                            <input type="text" id="image-url"
-                                class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
-                                placeholder="https://example.com/image.png">
+
+                        <!-- Voice Call Options -->
+                        <div id="voice-call-options-container" class="hidden space-y-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 dark:text-gray-300">Call Content
+                                    Type</label>
+                                <div class="mt-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                    <label for="call-type-tts"
+                                        class="relative flex items-center p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer has-[:checked]:bg-indigo-50 has-[:checked]:border-indigo-400 dark:has-[:checked]:bg-gray-700/50">
+                                        <input type="radio" id="call-type-tts" name="call-type" value="tts"
+                                            class="h-4 w-4 text-indigo-600 focus-ring" checked>
+                                        <span
+                                            class="ml-3 text-sm font-medium text-gray-800 dark:text-gray-200">Text-to-Speech</span>
+                                    </label>
+                                    <label for="call-type-audio"
+                                        class="relative flex items-center p-3 border border-gray-300 dark:border-gray-600 rounded-lg cursor-pointer has-[:checked]:bg-indigo-50 has-[:checked]:border-indigo-400 dark:has-[:checked]:bg-gray-700/50">
+                                        <input type="radio" id="call-type-audio" name="call-type" value="audio"
+                                            class="h-4 w-4 text-indigo-600 focus-ring">
+                                        <span class="ml-3 text-sm font-medium text-gray-800 dark:text-gray-200">Audio
+                                            File</span>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- 1. TTS Container -->
+                            <div id="tts-container">
+                                <label for="message-tts"
+                                    class="block text-sm font-medium text-gray-700 dark:text-gray-300">Message to
+                                    Speak</label>
+                                <textarea id="message-tts" rows="4"
+                                    class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
+                                    placeholder="Enter the text your call will speak..."></textarea>
+                            </div>
+
+                            <!-- 2. Audio File Container -->
+                            <div id="audio-container" class="hidden space-y-4">
+                                <div>
+                                    <label for="audio-url"
+                                        class="block text-sm font-medium text-gray-700 dark:text-gray-300">Public Audio
+                                        URL</label>
+                                    <input type="text" id="audio-url"
+                                        class="mt-1 block w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-indigo-500"
+                                        placeholder="Auto-filled after upload..." readonly>
+                                </div>
+
+                                <div
+                                    class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 space-y-4">
+                                    <h4 class="text-sm font-medium text-gray-600 dark:text-gray-300">Upload Audio File
+                                    </h4>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Use the tools below to record or
+                                        select an audio file. It will be automatically uploaded to Cloudinary and the
+                                        URL will be filled in above.</p>
+
+                                    <audio id="audio-preview" controls class="w-full"></audio>
+
+                                    <!-- File Picker -->
+                                    <div>
+                                        <label for="audio-file-picker"
+                                            class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Upload
+                                            from file:</label>
+                                        <input type="file" id="audio-file-picker" accept="audio/*"
+                                            class="text-sm text-gray-500 dark:text-gray-400">
+                                    </div>
+
+                                    <!-- Live Recorder -->
+                                    <div>
+                                        <label
+                                            class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Record
+                                            live:</label>
+                                        <div class="flex items-center gap-3">
+                                            <button id="record-button"
+                                                class="flex items-center justify-center gap-2 w-full sm:w-auto px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 focus-ring">
+                                                <div class="recording-dot w-2 h-2 bg-white rounded-full"></div>
+                                                <span>Record</span>
+                                            </button>
+                                            <button id="stop-record-button"
+                                                class="w-full sm:w-auto px-4 py-2 bg-gray-600 text-white font-semibold rounded-md hover:bg-gray-700 focus-ring"
+                                                disabled>Stop</button>
+                                            <span id="record-timer"
+                                                class="text-sm font-mono text-gray-700 dark:text-gray-300">00:00</span>
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload Status -->
+                                    <div id="upload-status"
+                                        class="hidden items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                                        <div class="spinner"></div>
+                                        <span id="upload-status-text">Uploading to Cloudinary...</span>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
 
+                <!-- Step 2: Add Contacts -->
                 <div
                     class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-3 mb-5">
@@ -204,6 +351,7 @@
                     </div>
                 </div>
 
+                <!-- Step 3: Configure & Launch -->
                 <div
                     class="bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700">
                     <div class="flex items-center gap-3 mb-5">
@@ -267,6 +415,7 @@
                 </div>
             </div>
 
+            <!-- Status Container -->
             <div id="status-container"
                 class="lg:col-span-1 bg-white dark:bg-gray-800 p-6 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 lg:sticky lg:top-8">
                 <h2 class="text-xl font-semibold mb-4 text-gray-900 dark:text-white">Live Campaign Status</h2>
@@ -307,9 +456,22 @@
         </main>
     </div>
 
+    <!-- === JAVASCRIPT === -->
     <script>
         // --- CONFIGURATION ---
-        const API_ENDPOINT = 'https://my-bulk-messaging-server.onrender.com/send'; // Change to your Render URL for production
+        // 
+        //  !!!  CRITICAL: YOU MUST CHANGE THIS  !!!
+        //
+        //  Replace this placeholder with your REAL public Render URL
+        //
+        const API_BASE_URL = 'https://my-bulk-messaging-server.onrender.com';
+        // 
+        //  !!!  CRITICAL: YOU MUST CHANGE THIS  !!!
+        //
+
+        const API_ENDPOINT_SEND = `${API_BASE_URL}/send`;
+        const API_ENDPOINT_SIGN = `${API_BASE_URL}/api/sign-upload`;
+
         const PRICING = { sms: 0.50, whatsapp: 0.45, call: 1.00 };
         const CHANNELS = [
             { id: 'sms', name: 'SMS' }, { id: 'whatsapp', name: 'WhatsApp' }, { id: 'call', name: 'Voice Call' }
@@ -317,10 +479,28 @@
 
         // --- DOM Elements ---
         const DOMElements = {
+            // Campaign
             channelSelect: document.getElementById('channel'),
+            smsWhatsappOptions: document.getElementById('sms-whatsapp-options-container'),
+            voiceCallOptions: document.getElementById('voice-call-options-container'),
+            // SMS/WA
             messageTextarea: document.getElementById('message'),
             imageUrlInput: document.getElementById('image-url'),
-            imageUrlContainer: document.getElementById('image-url-container'),
+            // Voice Call
+            callTypeTTS: document.getElementById('call-type-tts'),
+            callTypeAudio: document.getElementById('call-type-audio'),
+            ttsContainer: document.getElementById('tts-container'),
+            messageTTSTextarea: document.getElementById('message-tts'),
+            audioContainer: document.getElementById('audio-container'),
+            audioUrlInput: document.getElementById('audio-url'),
+            audioPreview: document.getElementById('audio-preview'),
+            audioFilePicker: document.getElementById('audio-file-picker'),
+            recordButton: document.getElementById('record-button'),
+            stopRecordButton: document.getElementById('stop-record-button'),
+            recordTimer: document.getElementById('record-timer'),
+            uploadStatus: document.getElementById('upload-status'),
+            uploadStatusText: document.getElementById('upload-status-text'),
+            // Contacts
             countryCodeInput: document.getElementById('country-code'),
             phoneNumberInput: document.getElementById('phone-number'),
             addNumberBtn: document.getElementById('add-number-btn'),
@@ -329,45 +509,51 @@
             fileInfo: document.getElementById('file-info'),
             contactsList: document.getElementById('contacts-list'),
             contactCount: document.getElementById('contact-count'),
+            // Controls
             sendButton: document.getElementById('send-button'),
             pauseResumeButton: document.getElementById('pause-resume-button'),
             stopButton: document.getElementById('stop-button'),
             delaySlider: document.getElementById('delay-slider'),
             delayValue: document.getElementById('delay-value'),
+            costEstimator: document.getElementById('cost-estimator'),
+            estimatedCost: document.getElementById('estimated-cost'),
+            // Status
             statusMessage: document.getElementById('status-message'),
             progressBar: document.getElementById('progress-bar'),
             sentCountEl: document.getElementById('sent-count'),
             totalCountEl: document.getElementById('total-count'),
             logsContainer: document.getElementById('logs'),
-            themeToggle: document.getElementById('theme-toggle'),
-            lightIcon: document.getElementById('theme-icon-light'),
-            darkIcon: document.getElementById('theme-icon-dark'),
-            costEstimator: document.getElementById('cost-estimator'),
-            estimatedCost: document.getElementById('estimated-cost'),
             tabLogs: document.getElementById('tab-logs'),
             tabFailures: document.getElementById('tab-failures'),
             tabContentLogs: document.getElementById('tab-content-logs'),
             tabContentFailures: document.getElementById('tab-content-failures'),
             failureCount: document.getElementById('failure-count'),
             failedNumbersTextarea: document.getElementById('failed-numbers'),
+            // Theme
+            themeToggle: document.getElementById('theme-toggle'),
+            lightIcon: document.getElementById('theme-icon-light'),
+            darkIcon: document.getElementById('theme-icon-dark'),
         };
 
         // --- State ---
         let campaign = {
             state: 'idle', // idle, running, paused, stopped, finished
-            contacts: new Set(), // Use a Set to automatically handle duplicates
+            contacts: new Set(),
             failedNumbers: [],
             currentIndex: 0,
             sentCount: 0,
             timeoutId: null,
         };
+        let mediaRecorder;
+        let audioChunks = [];
+        let recordTimerInterval;
 
         // --- Initialization ---
         function initialize() {
             setupEventListeners();
             initializeTheme();
             populateChannelSelect();
-            toggleImageInputVisibility();
+            updateChannelSpecificUI();
             updateCostEstimator();
         }
 
@@ -377,24 +563,41 @@
 
         // --- Event Listeners ---
         function setupEventListeners() {
+            // Theme
             DOMElements.themeToggle.addEventListener('click', toggleTheme);
+            // Campaign Setup
             DOMElements.channelSelect.addEventListener('change', () => {
-                toggleImageInputVisibility();
+                updateChannelSpecificUI();
                 updateCostEstimator();
             });
+            DOMElements.callTypeTTS.addEventListener('change', updateChannelSpecificUI);
+            DOMElements.callTypeAudio.addEventListener('change', updateChannelSpecificUI);
+            // Contacts
             DOMElements.csvFileInput.addEventListener('change', handleCsvUpload);
             DOMElements.addNumberBtn.addEventListener('click', handleAddNumber);
             DOMElements.phoneNumberInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') handleAddNumber();
             });
+            // Controls
             DOMElements.sendButton.addEventListener('click', confirmAndStartCampaign);
             DOMElements.pauseResumeButton.addEventListener('click', togglePauseResume);
             DOMElements.stopButton.addEventListener('click', stopCampaign);
             DOMElements.delaySlider.addEventListener('input', e => {
                 DOMElements.delayValue.textContent = (e.target.value / 1000).toFixed(1);
             });
+            // Status Tabs
             DOMElements.tabLogs.addEventListener('click', () => switchTab('logs'));
             DOMElements.tabFailures.addEventListener('click', () => switchTab('failures'));
+
+            // Media Helper Events
+            DOMElements.audioFilePicker.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadAudioToCloudinary(file);
+                }
+            });
+            DOMElements.recordButton.addEventListener('click', startRecording);
+            DOMElements.stopRecordButton.addEventListener('click', stopRecording);
         }
 
         // --- Contact Management ---
@@ -402,20 +605,15 @@
             const countryCode = DOMElements.countryCodeInput.value.trim();
             const phone = DOMElements.phoneNumberInput.value.trim();
             const feedbackEl = DOMElements.addNumberFeedback;
-
             if (!phone) {
                 feedbackEl.textContent = "Phone number cannot be empty.";
                 return;
             }
-
             const fullNumber = countryCode.startsWith('+') ? `${countryCode}${phone}` : `+${countryCode}${phone}`;
-
-            // A more general E.164-like validation
             if (!/^\+[1-9]\d{6,14}$/.test(fullNumber)) {
                 feedbackEl.textContent = `Invalid number format: ${fullNumber}`;
                 return;
             }
-
             if (campaign.contacts.has(fullNumber)) {
                 feedbackEl.textContent = "This number has already been added.";
             } else {
@@ -427,7 +625,6 @@
                 feedbackEl.textContent = '';
             }
         }
-
         function handleCsvUpload(event) {
             const file = event.target.files[0];
             if (!file) return;
@@ -438,14 +635,12 @@
                 const rows = text.split('\n').map(row => row.trim()).filter(Boolean);
                 const header = rows[0].split(',').map(h => h.trim().toLowerCase());
                 const phoneIndex = header.indexOf('phone');
-
                 if (phoneIndex === -1) {
                     addLog("CSV Error: File must have a 'phone' column header.", "error"); return;
                 }
                 const numbersFromCsv = rows.slice(1).map(row => row.split(',')[phoneIndex]?.trim()).filter(Boolean);
                 let addedCount = 0;
                 numbersFromCsv.forEach(num => {
-                    // Basic validation before adding
                     if (/^\+?[1-9]\d{6,14}$/.test(num) && !campaign.contacts.has(num)) {
                         campaign.contacts.add(num.startsWith('+') ? num : `+${num}`);
                         addedCount++;
@@ -457,13 +652,11 @@
             };
             reader.readAsText(file);
         }
-
         function removeContact(numberToRemove) {
             campaign.contacts.delete(numberToRemove);
             renderContacts();
             updateCostEstimator();
         }
-
         function renderContacts() {
             DOMElements.contactsList.innerHTML = '';
             DOMElements.contactCount.textContent = campaign.contacts.size;
@@ -483,15 +676,114 @@
             }
         }
 
+        // --- Media & Cloudinary Logic ---
+        async function startRecording() {
+            try {
+                const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+                mediaRecorder = new MediaRecorder(stream);
+                audioChunks = [];
+                mediaRecorder.ondataavailable = event => {
+                    audioChunks.push(event.data);
+                };
+                mediaRecorder.onstop = () => {
+                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
+                    const audioFile = new File([audioBlob], `recording-${new Date().toISOString()}.wav`, { type: 'audio/wav' });
+                    uploadAudioToCloudinary(audioFile);
+                    addLog("Recording finished. Uploading...", "info");
+                };
+                mediaRecorder.start();
+                DOMElements.recordButton.disabled = true;
+                DOMElements.stopRecordButton.disabled = false;
+                DOMElements.audioFilePicker.disabled = true;
+                startRecordTimer();
+                addLog("Recording started...", "info");
+            } catch (err) {
+                addLog("Error starting recording: " + err.message, "error");
+            }
+        }
+        function stopRecording() {
+            mediaRecorder.stop();
+            DOMElements.recordButton.disabled = false;
+            DOMElements.stopRecordButton.disabled = true;
+            DOMElements.audioFilePicker.disabled = false;
+            stopRecordTimer();
+        }
+        function startRecordTimer() {
+            let seconds = 0;
+            DOMElements.recordTimer.textContent = '00:00';
+            recordTimerInterval = setInterval(() => {
+                seconds++;
+                const mins = Math.floor(seconds / 60).toString().padStart(2, '0');
+                const secs = (seconds % 60).toString().padStart(2, '0');
+                DOMElements.recordTimer.textContent = `${mins}:${secs}`;
+            }, 1000);
+        }
+        function stopRecordTimer() {
+            clearInterval(recordTimerInterval);
+        }
+
+        async function uploadAudioToCloudinary(file) {
+            // 1. Show loading indicator
+            DOMElements.uploadStatus.classList.remove('hidden');
+            DOMElements.uploadStatus.classList.add('flex');
+            DOMElements.uploadStatusText.textContent = `Uploading ${file.name}...`;
+            DOMElements.audioUrlInput.value = ''; // Clear old URL
+
+            try {
+                // 2. Get secure signature from our backend
+                const signResponse = await fetch(API_ENDPOINT_SIGN);
+                if (!signResponse.ok) {
+                    const err = await signResponse.json();
+                    throw new Error(err.error || 'Could not get upload signature from server.');
+                }
+                const signData = await signResponse.json();
+
+                // 3. Prepare form data to send to Cloudinary
+                const formData = new FormData();
+                formData.append('file', file);
+                formData.append('api_key', signData.apiKey);
+                formData.append('timestamp', signData.timestamp);
+                formData.append('signature', signData.signature);
+                formData.append('folder', 'twilio_audio'); // Matches folder in server.js
+
+                // 4. Upload file directly to Cloudinary
+                const uploadUrl = `https://api.cloudinary.com/v1_1/${signData.cloudName}/video/upload`;
+
+                const uploadResponse = await fetch(uploadUrl, {
+                    method: 'POST',
+                    body: formData,
+                });
+
+                if (!uploadResponse.ok) {
+                    const err = await uploadResponse.json();
+                    throw new Error(err.error?.message || 'Cloudinary upload failed.');
+                }
+                const uploadData = await uploadResponse.json();
+
+                // 5. Success! Auto-fill the URL
+                const publicUrl = uploadData.secure_url;
+                DOMElements.audioUrlInput.value = publicUrl; // AUTO-FETCH
+                DOMElements.audioPreview.src = publicUrl; // Set preview player
+                addLog("Audio successfully uploaded.", "success");
+                DOMElements.uploadStatusText.textContent = "Upload complete!";
+                DOMElements.uploadStatus.classList.add('hidden');
+
+            } catch (error) {
+                console.error("Upload failed:", error);
+                addLog(`Upload Failed: ${error.message}`, "error");
+                DOMElements.uploadStatusText.textContent = "Upload failed.";
+                // Do not hide the status on failure, so the user sees it
+            }
+        }
+
 
         // --- Core Campaign Logic ---
         function confirmAndStartCampaign() {
             if (!validateInputs()) return;
-
             const contactCount = campaign.contacts.size;
             const estimatedCost = calculateCost(contactCount);
-
-            if (confirm(`This campaign will be sent to ${contactCount} numbers.\nEstimated cost: ₹${estimatedCost.toFixed(2)}.\n\nProceed?`)) {
+            // Use a simple confirm dialog
+            if (window.confirm(`This campaign will be sent to ${contactCount} numbers.\nEstimated cost: ₹${estimatedCost.toFixed(2)}.\n\nProceed?`)) {
                 startCampaign();
             }
         }
@@ -503,24 +795,43 @@
                 setTimeout(() => document.getElementById('contacts-list-container').classList.remove('shake'), 500);
                 return false;
             }
-            if (!DOMElements.messageTextarea.value.trim() && !DOMElements.imageUrlInput.value.trim()) {
-                addLog("Validation Error: Message or Image URL cannot be empty.", "error");
-                DOMElements.messageTextarea.classList.add('shake');
-                setTimeout(() => DOMElements.messageTextarea.classList.remove('shake'), 500);
-                return false;
+
+            const channel = DOMElements.channelSelect.value;
+            if (channel === 'call') {
+                const callType = document.querySelector('input[name="call-type"]:checked').value;
+                if (callType === 'tts') {
+                    if (!DOMElements.messageTTSTextarea.value.trim()) {
+                        addLog("Validation Error: Message to Speak cannot be empty.", "error");
+                        DOMElements.messageTTSTextarea.classList.add('shake');
+                        setTimeout(() => DOMElements.messageTTSTextarea.classList.remove('shake'), 500);
+                        return false;
+                    }
+                } else if (callType === 'audio') {
+                    if (!DOMElements.audioUrlInput.value.trim()) {
+                        addLog("Validation Error: Public Audio URL is empty. Please upload a file first.", "error");
+                        DOMElements.audioUrlInput.classList.add('shake');
+                        setTimeout(() => DOMElements.audioUrlInput.classList.remove('shake'), 500);
+                        return false;
+                    }
+                }
+            } else { // SMS or WhatsApp
+                if (!DOMElements.messageTextarea.value.trim() && !DOMElements.imageUrlInput.value.trim()) {
+                    addLog("Validation Error: Message or Image URL cannot be empty.", "error");
+                    DOMElements.messageTextarea.classList.add('shake');
+                    setTimeout(() => DOMElements.messageTextarea.classList.remove('shake'), 500);
+                    return false;
+                }
             }
             return true;
         }
 
         function startCampaign() {
-            resetCampaignState(); // Resets stats but keeps contacts
+            resetCampaignState();
             const numbersArray = Array.from(campaign.contacts);
             campaign.state = 'running';
             campaign.totalCount = numbersArray.length;
-
             updateUIForCampaignStart();
             addLog(`Starting campaign for ${campaign.totalCount} numbers via ${DOMElements.channelSelect.value.toUpperCase()}.`);
-
             sendNextMessage(numbersArray);
         }
 
@@ -532,22 +843,40 @@
 
             const number = numbers[campaign.currentIndex];
             const channel = DOMElements.channelSelect.value;
-            const message = DOMElements.messageTextarea.value;
-            const imageUrl = DOMElements.imageUrlInput.value.trim();
-            const payload = { channel, message, recipient: number };
-            if (imageUrl && (channel === 'sms' || channel === 'whatsapp')) {
-                payload.imageUrl = imageUrl;
+
+            // --- Build Payload ---
+            const payload = {
+                channel,
+                recipient: number
+            };
+
+            if (channel === 'call') {
+                const callType = document.querySelector('input[name="call-type"]:checked').value;
+                payload.callType = callType; // 'tts' or 'audio'
+                if (callType === 'tts') {
+                    payload.message = DOMElements.messageTTSTextarea.value;
+                } else {
+                    payload.audioUrl = DOMElements.audioUrlInput.value.trim();
+                }
+            } else { // SMS or WhatsApp
+                const message = DOMElements.messageTextarea.value;
+                const imageUrl = DOMElements.imageUrlInput.value.trim();
+                if (message) payload.message = message;
+                if (imageUrl) payload.imageUrl = imageUrl;
             }
+            // --- End Build Payload ---
 
             try {
-                const response = await fetch(API_ENDPOINT, {
+                const response = await fetch(API_ENDPOINT_SEND, { // Use correct endpoint
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify(payload),
                 });
                 const result = await response.json();
-                if (!response.ok) throw new Error(result.error || `HTTP error! status: ${response.status}`);
-
+                if (!response.ok) {
+                    const err = result.error || `HTTP error! status: ${response.status}`;
+                    throw new Error(err);
+                }
                 campaign.sentCount++;
                 addLog(`Success: ${number} (SID: ${result.sid})`, 'success');
             } catch (error) {
@@ -573,12 +902,10 @@
                 campaign.state = 'running';
                 updateUIForResume();
                 addLog('Campaign resumed.');
-                // Re-grab the current numbers and continue
                 const numbersArray = Array.from(campaign.contacts);
                 sendNextMessage(numbersArray);
             }
         }
-
         function stopCampaign() {
             if (campaign.state === 'running' || campaign.state === 'paused') {
                 campaign.state = 'stopped';
@@ -587,14 +914,12 @@
                 finishCampaign();
             }
         }
-
         function finishCampaign() {
             const finalState = campaign.state === 'stopped' ? 'stopped' : 'finished';
             campaign.state = finalState;
             addLog(`Campaign ${finalState}. Processed ${campaign.currentIndex} of ${campaign.totalCount}. Success: ${campaign.sentCount}, Failures: ${campaign.failedNumbers.length}.`, 'info');
             updateUIForCampaignEnd();
         }
-
         function updateUIForCampaignStart() {
             DOMElements.statusMessage.textContent = 'Running...';
             DOMElements.totalCountEl.textContent = campaign.totalCount;
@@ -603,37 +928,33 @@
             DOMElements.logsContainer.innerHTML = '';
             DOMElements.failedNumbersTextarea.value = '';
             DOMElements.failureCount.textContent = '0';
-            // Disable configuration
-            [DOMElements.sendButton, DOMElements.channelSelect, DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.addNumberBtn, DOMElements.csvFileInput].forEach(el => el.disabled = true);
-            // Enable controls
+
+            [DOMElements.sendButton, DOMElements.channelSelect, DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.addNumberBtn, DOMElements.csvFileInput, DOMElements.messageTTSTextarea, DOMElements.audioUrlInput, DOMElements.audioFilePicker, DOMElements.recordButton, DOMElements.callTypeTTS, DOMElements.callTypeAudio].forEach(el => el.disabled = true);
+
             DOMElements.pauseResumeButton.disabled = false;
             DOMElements.stopButton.disabled = false;
         }
-
         function updateUIForPause() {
             DOMElements.pauseResumeButton.querySelector('span').textContent = 'Resume';
             DOMElements.pauseResumeButton.classList.replace('bg-yellow-500', 'bg-green-500');
             DOMElements.pauseResumeButton.classList.replace('hover:bg-yellow-600', 'hover:bg-green-600');
             DOMElements.statusMessage.textContent = 'Paused';
         }
-
         function updateUIForResume() {
             DOMElements.pauseResumeButton.querySelector('span').textContent = 'Pause';
             DOMElements.pauseResumeButton.classList.replace('bg-green-500', 'bg-yellow-500');
             DOMElements.pauseResumeButton.classList.replace('hover:bg-green-600', 'hover:bg-yellow-600');
             DOMElements.statusMessage.textContent = 'Running...';
         }
-
         function updateUIForCampaignEnd() {
             DOMElements.statusMessage.textContent = campaign.state === 'stopped' ? 'Stopped' : 'Finished';
-            // Re-enable configuration
-            [DOMElements.sendButton, DOMElements.channelSelect, DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.addNumberBtn, DOMElements.csvFileInput].forEach(el => el.disabled = false);
-            // Disable controls
+
+            [DOMElements.sendButton, DOMElements.channelSelect, DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.addNumberBtn, DOMElements.csvFileInput, DOMElements.messageTTSTextarea, DOMElements.audioUrlInput, DOMElements.audioFilePicker, DOMElements.recordButton, DOMElements.callTypeTTS, DOMElements.callTypeAudio].forEach(el => el.disabled = false);
+
             DOMElements.pauseResumeButton.disabled = true;
             DOMElements.stopButton.disabled = true;
             updateUIForResume(); // Reset pause button appearance
         }
-
         function resetCampaignState() {
             if (campaign.timeoutId) clearTimeout(campaign.timeoutId);
             campaign.state = 'idle';
@@ -642,13 +963,11 @@
             campaign.sentCount = 0;
             campaign.timeoutId = null;
         }
-
         function updateProgress() {
             DOMElements.sentCountEl.textContent = campaign.currentIndex;
             const progress = campaign.totalCount > 0 ? (campaign.currentIndex / campaign.totalCount) * 100 : 0;
             DOMElements.progressBar.style.width = `${progress}%`;
         }
-
         function updateFailuresTab() {
             DOMElements.failureCount.textContent = campaign.failedNumbers.length;
             DOMElements.failedNumbersTextarea.value = campaign.failedNumbers.join('\n');
@@ -659,16 +978,32 @@
             const pricePerUnit = PRICING[DOMElements.channelSelect.value] || 0;
             return numberCount * pricePerUnit;
         }
-
         function updateCostEstimator() {
             const contactCount = campaign.contacts.size;
             const totalCost = calculateCost(contactCount);
             DOMElements.estimatedCost.textContent = `₹${totalCost.toFixed(2)}`;
         }
 
-        function toggleImageInputVisibility() {
+        function updateChannelSpecificUI() {
             const selectedChannel = DOMElements.channelSelect.value;
-            DOMElements.imageUrlContainer.style.display = (selectedChannel === 'sms' || selectedChannel === 'whatsapp') ? 'block' : 'none';
+
+            if (selectedChannel === 'call') {
+                DOMElements.smsWhatsappOptions.classList.add('hidden');
+                DOMElements.voiceCallOptions.classList.remove('hidden');
+
+                const callType = document.querySelector('input[name="call-type"]:checked').value;
+                if (callType === 'tts') {
+                    DOMElements.ttsContainer.classList.remove('hidden');
+                    DOMElements.audioContainer.classList.add('hidden');
+                } else { // 'audio'
+                    DOMElements.ttsContainer.classList.add('hidden');
+                    DOMElements.audioContainer.classList.remove('hidden');
+                }
+            } else {
+                DOMElements.smsWhatsappOptions.classList.remove('hidden');
+                DOMElements.voiceCallOptions.classList.add('hidden');
+                DOMElements.imageUrlInput.parentElement.style.display = 'block';
+            }
         }
 
         function addLog(message, type = 'info') {
@@ -682,11 +1017,9 @@
             p.innerHTML = `<span class="font-mono text-xs mr-2 opacity-70">[${new Date().toLocaleTimeString()}]</span> ${message}`;
             DOMElements.logsContainer.prepend(p);
         }
-
         function switchTab(tab) {
             const activeClasses = ['border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400'];
             const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300'];
-
             if (tab === 'logs') {
                 DOMElements.tabContentLogs.classList.remove('hidden');
                 DOMElements.tabContentFailures.classList.add('hidden');
@@ -703,14 +1036,12 @@
                 DOMElements.tabLogs.classList.add(...inactiveClasses);
             }
         }
-
         function initializeTheme() {
             const isDark = localStorage.theme === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches);
             document.documentElement.classList.toggle('dark', isDark);
             DOMElements.lightIcon.classList.toggle('hidden', isDark);
             DOMElements.darkIcon.classList.toggle('hidden', !isDark);
         }
-
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.theme = isDark ? 'dark' : 'light';

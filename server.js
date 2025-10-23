@@ -5,6 +5,7 @@ const cors = require('cors');
 require('dotenv').config();
 const twilio = require('twilio');
 const rateLimit = require('express-rate-limit');
+const cloudinary = require('cloudinary').v2; // Import Cloudinary
 
 const app = express();
 const port = process.env.PORT || 3000;
@@ -19,6 +20,7 @@ if (!frontendUrl) {
     console.warn("WARNING: FRONTEND_URL is not set. For production, this is a security risk.");
 }
 const corsOptions = {
+    // This MUST match your Netlify URL in your Render Environment Variables
     origin: frontendUrl || "http://127.0.0.1:5500", // Fallback for local dev
 };
 app.use(cors(corsOptions));
@@ -42,24 +44,79 @@ const twilioSmsNumber = process.env.TWILIO_SMS_NUMBER;
 const twilioWhatsAppSender = process.env.TWILIO_WHATSAPP_SENDER;
 
 if (!accountSid || !authToken || !twilioSmsNumber || !twilioWhatsAppSender) {
-    console.error("FATAL ERROR: Crucial Twilio credentials are not set in the environment variables. Please check your .env file.");
+    console.error("FATAL ERROR: Crucial Twilio credentials are not set in the environment variables. Please check your .env file or Render dashboard.");
     process.exit(1);
 }
 const client = twilio(accountSid, authToken);
 
-// --- Main Sending Endpoint ---
+// --- Cloudinary Configuration ---
+const cloudinaryCloudName = process.env.CLOUDINARY_CLOUD_NAME;
+const cloudinaryApiKey = process.env.CLOUDINARY_API_KEY;
+const cloudinaryApiSecret = process.env.CLOUDINARY_API_SECRET;
+
+if (!cloudinaryCloudName || !cloudinaryApiKey || !cloudinaryApiSecret) {
+    console.error("FATAL ERROR: Cloudinary credentials are not set. Please check your .env file or Render dashboard.");
+    process.exit(1);
+}
+cloudinary.config({
+    cloud_name: cloudinaryCloudName,
+    api_key: cloudinaryApiKey,
+    api_secret: cloudinaryApiSecret,
+    secure: true
+});
+
+// --- API Endpoint: Get Cloudinary Signature ---
+// This new endpoint provides a secure signature for the frontend to upload directly to Cloudinary
+app.get('/api/sign-upload', limiter, (req, res) => {
+    try {
+        const timestamp = Math.round((new Date).getTime() / 1000);
+
+        // This creates a secure signature for the upload
+        // It's valid for 10 minutes (600 seconds)
+        const signature = cloudinary.utils.api_sign_request(
+            {
+                timestamp: timestamp,
+                folder: 'twilio_audio' // Organizes uploads in Cloudinary
+            },
+            cloudinaryApiSecret
+        );
+
+        res.status(200).json({
+            timestamp: timestamp,
+            signature: signature,
+            apiKey: cloudinaryApiKey,
+            cloudName: cloudinaryCloudName
+        });
+    } catch (error) {
+        console.error("Error signing upload request:", error);
+        res.status(500).json({ error: "Could not sign upload request." });
+    }
+});
+
+
+// --- API Endpoint: Send Message ---
 app.post('/send', limiter, async (req, res) => {
-    const { channel, recipient, message, imageUrl } = req.body;
+    const { channel, recipient, message, imageUrl, callType, audioUrl } = req.body;
 
     // --- Input Validation ---
     if (!channel || !recipient) {
         return res.status(400).json({ error: 'Missing required fields: channel or recipient.' });
     }
-    if (!message && !imageUrl) {
+
+    // Advanced validation for different channels and types
+    if (channel === 'call') {
+        if (callType === 'tts' && !message) {
+            return res.status(400).json({ error: 'A message is required for text-to-speech calls.' });
+        }
+        if (callType === 'audio' && !audioUrl) {
+            return res.status(400).json({ error: 'An audio URL is required for audio file calls.' });
+        }
+    } else if (!message && !imageUrl) {
+        // This is for SMS/WhatsApp
         return res.status(400).json({ error: 'A message or an image URL is required.' });
     }
 
-    // E.164 format validation. This is a robust international format.
+    // E.164 format validation
     const e164Regex = /^\+[1-9]\d{1,14}$/;
     if (!e164Regex.test(recipient)) {
         return res.status(400).json({ error: `Invalid phone number format: ${recipient}. Must be in E.164 format (e.g., +919876543210).` });
@@ -94,11 +151,6 @@ app.post('/send', limiter, async (req, res) => {
             case 'sms':
             case 'whatsapp':
                 if (message) messageOptions.body = message;
-                // **IMAGE SENDING LOGIC**: For MMS/WhatsApp media, Twilio expects `mediaUrl` to be an array of public URLs.
-                // ** TROUBLESHOOTING **
-                // 1. Is the `imageUrl` a publicly accessible URL? Try opening it in an incognito browser window.
-                // 2. Is your Twilio phone number (`TWILIO_SMS_NUMBER`) MMS-enabled? Check your number's capabilities in the Twilio console.
-                // 3. For WhatsApp, are you using the Sandbox? Media is only supported on paid accounts or with pre-approved templates.
                 if (imageUrl) messageOptions.mediaUrl = [imageUrl];
                 result = await client.messages.create(messageOptions);
                 break;
@@ -107,8 +159,18 @@ app.post('/send', limiter, async (req, res) => {
                 if (imageUrl) {
                     return res.status(400).json({ error: 'Cannot send an image with a voice call.' });
                 }
+
                 const twiml = new twilio.twiml.VoiceResponse();
-                twiml.say({ voice: 'Polly.Aditi' }, message); // Indian Polly voice
+
+                // Dynamic logic for voice calls
+                if (callType === 'audio') {
+                    // Use <Play> for the pre-recorded Cloudinary file
+                    twiml.play(audioUrl);
+                } else {
+                    // This is your original Text-to-Speech (TTS) logic
+                    twiml.say({ voice: 'Polly.Aditi' }, message); // Indian Polly voice
+                }
+
                 twiml.hangup();
                 messageOptions.twiml = twiml.toString();
                 result = await client.calls.create(messageOptions);
@@ -119,8 +181,7 @@ app.post('/send', limiter, async (req, res) => {
         res.status(200).json({ success: true, sid: result.sid });
 
     } catch (error) {
-        // **IMPROVED ERROR LOGGING**: We now log the entire error object.
-        // This will give you a Twilio error code (e.g., 21610) which you can look up for specific solutions.
+        // Improved error logging
         console.error(`Twilio API Error for ${recipient}:`, error);
         res.status(error.status || 500).json({ error: `Twilio Error: ${error.message}` });
     }
@@ -129,3 +190,4 @@ app.post('/send', limiter, async (req, res) => {
 app.listen(port, () => {
     console.log(`Advanced messaging server listening on port ${port}`);
 });
+
