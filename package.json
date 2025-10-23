@@ -1,6 +1,6 @@
 {
   "name": "messaging-app",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "description": "An advanced bulk messaging application with rate limiting and advanced controls.",
   "main": "server.js",
   "scripts": {
@@ -15,12 +15,15 @@
   ],
   "author": "",
   "license": "ISC",
-  "devDependencies": {
+  "dependencies": {
     "cloudinary": "^2.8.0",
     "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^5.1.0",
     "express-rate-limit": "^8.1.0",
     "twilio": "^5.10.3"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.22"
   }
 }
