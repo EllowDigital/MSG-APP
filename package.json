@@ -13,7 +13,7 @@
     "whatsapp",
     "node"
   ],
-  "author": "",
+  "author": "EllowDigital",
   "license": "ISC",
   "dependencies": {
     "cloudinary": "^2.8.0",
