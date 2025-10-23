@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale-1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Advanced Messaging Dashboard</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -120,7 +120,7 @@
 
 <body class="bg-gray-50 dark:bg-gray-900 text-gray-800 dark:text-gray-200 transition-colors duration-300 antialiased">
 
-    <div class="container mx-auto p-4 sm:p-6 lg:p-8">
+    <div class="container mx-auto p-4 sm:p-6 lg:p-8 flex flex-col min-h-screen">
         <!-- Header -->
         <header
             class="sticky top-0 z-40 bg-gray-50/70 dark:bg-gray-900/70 backdrop-blur-lg -mx-4 sm:-mx-6 lg:-mx-8 px-4 sm:px-6 lg:px-8 py-6 border-b border-gray-200 dark:border-gray-700/50 flex justify-between items-center">
@@ -150,7 +150,7 @@
             </button>
         </header>
 
-        <main class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start pt-8">
+        <main class="grid grid-cols-1 lg:grid-cols-5 gap-6 lg:gap-8 items-start pt-8 flex-grow">
 
             <div class="lg:col-span-3 space-y-8">
                 <!-- Step 1: Compose Campaign -->
@@ -179,13 +179,30 @@
                                     class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
                                     placeholder="Enter your message..."></textarea>
                             </div>
-                            <div>
+
+                            <!-- Updated Image Upload Area -->
+                            <div class="space-y-2">
                                 <label for="image-url"
                                     class="block text-sm font-medium text-gray-700 dark:text-gray-300">Optional Image
                                     URL</label>
                                 <input type="text" id="image-url"
-                                    class="mt-1 block w-full p-3 bg-gray-50 dark:bg-gray-700/50 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus-ring focus:border-indigo-500 focus:ring-indigo-500"
-                                    placeholder="https://example.com/image.png">
+                                    class="block w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm"
+                                    placeholder="Auto-filled after image upload..." readonly>
+
+                                <div
+                                    class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 space-y-3">
+                                    <h4 class="text-xs font-medium text-gray-600 dark:text-gray-300">Upload Image File
+                                        (Optional)</h4>
+                                    <img id="image-preview" src="" alt="Image Preview"
+                                        class="max-h-40 rounded-md hidden mx-auto mb-2">
+                                    <input type="file" id="image-file-picker" accept="image/*"
+                                        class="text-sm text-gray-500 dark:text-gray-400">
+                                    <div id="image-upload-status"
+                                        class="hidden items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400">
+                                        <div class="spinner w-4 h-4"></div>
+                                        <span id="image-upload-status-text">Uploading image...</span>
+                                    </div>
+                                </div>
                             </div>
                         </div>
 
@@ -230,15 +247,15 @@
                                         URL</label>
                                     <input type="text" id="audio-url"
                                         class="mt-1 block w-full p-3 bg-gray-100 dark:bg-gray-700 border border-gray-300 dark:border-gray-600 rounded-md shadow-sm focus:ring-indigo-500"
-                                        placeholder="Auto-filled after upload..." readonly>
+                                        placeholder="Auto-filled after audio upload..." readonly>
                                 </div>
 
                                 <div
                                     class="p-4 bg-gray-50 dark:bg-gray-700/50 rounded-lg border border-gray-200 dark:border-gray-600 space-y-4">
                                     <h4 class="text-sm font-medium text-gray-600 dark:text-gray-300">Upload Audio File
                                     </h4>
-                                    <p class="text-xs text-gray-500 dark:text-gray-400">Record or select an audio file.
-                                        It will be automatically uploaded and the URL filled above.</p>
+                                    <p class="text-xs text-gray-500 dark:text-gray-400">Record (max 30s) or select an
+                                        audio file. It will be automatically uploaded and the URL filled above.</p>
 
                                     <audio id="audio-preview" controls class="w-full"></audio>
 
@@ -255,7 +272,7 @@
                                     <div>
                                         <label
                                             class="block text-xs font-medium text-gray-700 dark:text-gray-300 mb-1">Record
-                                            live:</label>
+                                            live (max 30s):</label>
                                         <div class="flex items-center flex-wrap gap-3">
                                             <button id="record-button"
                                                 class="flex items-center justify-center gap-2 flex-grow sm:flex-grow-0 px-4 py-2 bg-red-600 text-white font-semibold rounded-md hover:bg-red-700 focus-ring">
@@ -271,10 +288,10 @@
                                     </div>
 
                                     <!-- Upload Status -->
-                                    <div id="upload-status"
+                                    <div id="audio-upload-status"
                                         class="hidden items-center gap-2 text-sm font-medium text-indigo-600 dark:text-indigo-400">
-                                        <div class="spinner"></div>
-                                        <span id="upload-status-text">Uploading to Cloudinary...</span>
+                                        <div class="spinner w-4 h-4"></div>
+                                        <span id="audio-upload-status-text">Uploading audio...</span>
                                     </div>
                                 </div>
                             </div>
@@ -456,11 +473,23 @@
                 </div>
             </div>
         </main>
+
+        <!-- Footer -->
+        <footer class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-center">
+            <p class="text-sm text-gray-500 dark:text-gray-400">
+                Version <span id="app-version">2.0.0</span> | Made with ❤️ by
+                <a href="https://ellowdigital.netlify.app" target="_blank" rel="noopener noreferrer"
+                    class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 underline">
+                    EllowDigital
+                </a>
+            </p>
+        </footer>
     </div>
 
     <!-- === JAVASCRIPT === -->
     <script>
         // --- CONFIGURATION ---
+        const APP_VERSION = '2.0.0'; // Define app version
         // 
         //  !!!  CRITICAL: YOU MUST CHANGE THIS  !!!
         //
@@ -472,7 +501,7 @@
         //
 
         const API_ENDPOINT_SEND = `${API_BASE_URL}/send`;
-        const API_ENDPOINT_SIGN = `${API_BASE_URL}/api/sign-upload`;
+        const API_ENDPOINT_SIGN = `${API_BASE_URL}/api/sign-upload`; // Used for both audio and image
 
         const PRICING = { sms: 0.50, whatsapp: 0.45, call: 1.00 };
         const CHANNELS = [
@@ -487,21 +516,25 @@
             voiceCallOptions: document.getElementById('voice-call-options-container'),
             // SMS/WA
             messageTextarea: document.getElementById('message'),
-            imageUrlInput: document.getElementById('image-url'),
+            imageUrlInput: document.getElementById('image-url'), // Now readonly
+            imageFilePicker: document.getElementById('image-file-picker'), // NEW
+            imagePreview: document.getElementById('image-preview'), // NEW
+            imageUploadStatus: document.getElementById('image-upload-status'), // NEW
+            imageUploadStatusText: document.getElementById('image-upload-status-text'), // NEW
             // Voice Call
             callTypeTTS: document.getElementById('call-type-tts'),
             callTypeAudio: document.getElementById('call-type-audio'),
             ttsContainer: document.getElementById('tts-container'),
             messageTTSTextarea: document.getElementById('message-tts'),
             audioContainer: document.getElementById('audio-container'),
-            audioUrlInput: document.getElementById('audio-url'),
+            audioUrlInput: document.getElementById('audio-url'), // Readonly
             audioPreview: document.getElementById('audio-preview'),
             audioFilePicker: document.getElementById('audio-file-picker'),
             recordButton: document.getElementById('record-button'),
             stopRecordButton: document.getElementById('stop-record-button'),
             recordTimer: document.getElementById('record-timer'),
-            uploadStatus: document.getElementById('upload-status'),
-            uploadStatusText: document.getElementById('upload-status-text'),
+            audioUploadStatus: document.getElementById('audio-upload-status'), // Renamed ID
+            audioUploadStatusText: document.getElementById('audio-upload-status-text'), // Renamed ID
             // Contacts
             countryCodeInput: document.getElementById('country-code'),
             phoneNumberInput: document.getElementById('phone-number'),
@@ -510,6 +543,7 @@
             csvFileInput: document.getElementById('csvFile'),
             fileInfo: document.getElementById('file-info'),
             contactsList: document.getElementById('contacts-list'),
+            contactsListContainer: document.getElementById('contacts-list-container'), // Added for validation shake
             contactCount: document.getElementById('contact-count'),
             // Controls
             sendButton: document.getElementById('send-button'),
@@ -535,6 +569,8 @@
             themeToggle: document.getElementById('theme-toggle'),
             lightIcon: document.getElementById('theme-icon-light'),
             darkIcon: document.getElementById('theme-icon-dark'),
+            // Footer
+            appVersionSpan: document.getElementById('app-version'), // NEW: For version display
         };
 
         // --- State ---
@@ -558,6 +594,10 @@
             populateChannelSelect();
             updateChannelSpecificUI();
             updateCostEstimator();
+            // Display version in footer
+            if (DOMElements.appVersionSpan) {
+                DOMElements.appVersionSpan.textContent = APP_VERSION;
+            }
         }
 
         function populateChannelSelect() {
@@ -592,15 +632,23 @@
             DOMElements.tabLogs.addEventListener('click', () => switchTab('logs'));
             DOMElements.tabFailures.addEventListener('click', () => switchTab('failures'));
 
-            // Media Helper Events
+            // Media Helper Events - Audio
             DOMElements.audioFilePicker.addEventListener('change', (e) => {
                 const file = e.target.files[0];
                 if (file) {
-                    uploadAudioToCloudinary(file);
+                    uploadMediaToCloudinary(file, 'audio'); // Specify type
                 }
             });
             DOMElements.recordButton.addEventListener('click', startRecording);
             DOMElements.stopRecordButton.addEventListener('click', stopRecording);
+
+            // Media Helper Events - Image (NEW)
+            DOMElements.imageFilePicker.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (file) {
+                    uploadMediaToCloudinary(file, 'image'); // Specify type
+                }
+            });
         }
 
         // --- Contact Management ---
@@ -613,8 +661,9 @@
                 return;
             }
             const fullNumber = countryCode.startsWith('+') ? `${countryCode}${phone}` : `+${countryCode}${phone}`;
-            if (!/^\+[1-9]\d{6,14}$/.test(fullNumber)) {
-                feedbackEl.textContent = `Invalid number format: ${fullNumber}`;
+            // More robust E.164 validation
+            if (!/^\+[1-9]\d{1,14}$/.test(fullNumber)) { // Adjusted max length
+                feedbackEl.textContent = `Invalid number format: ${fullNumber}. Use E.164 (e.g., +919876543210)`;
                 return;
             }
             if (campaign.contacts.has(fullNumber)) {
@@ -634,24 +683,63 @@
             DOMElements.fileInfo.textContent = `File: ${file.name}`;
             const reader = new FileReader();
             reader.onload = (e) => {
-                const text = e.target.result;
-                const rows = text.split('\n').map(row => row.trim()).filter(Boolean);
-                const header = rows[0].split(',').map(h => h.trim().toLowerCase());
-                const phoneIndex = header.indexOf('phone');
-                if (phoneIndex === -1) {
-                    addLog("CSV Error: File must have a 'phone' column header.", "error"); return;
-                }
-                const numbersFromCsv = rows.slice(1).map(row => row.split(',')[phoneIndex]?.trim()).filter(Boolean);
-                let addedCount = 0;
-                numbersFromCsv.forEach(num => {
-                    if (/^\+?[1-9]\d{6,14}$/.test(num) && !campaign.contacts.has(num)) {
-                        campaign.contacts.add(num.startsWith('+') ? num : `+${num}`);
-                        addedCount++;
+                try {
+                    const text = e.target.result;
+                    const rows = text.split(/[\r\n]+/).map(row => row.trim()).filter(Boolean); // Handle different line endings
+                    if (rows.length < 2) {
+                        addLog("CSV Error: File seems empty or has no data rows.", "error"); return;
                     }
-                });
-                renderContacts();
-                updateCostEstimator();
-                addLog(`Loaded and added ${addedCount} new unique numbers from CSV.`, "success");
+                    // More flexible header detection (case-insensitive, strips quotes)
+                    const header = rows[0].split(',').map(h => h.trim().toLowerCase().replace(/^"|"$/g, ''));
+                    const phoneIndex = header.indexOf('phone');
+
+                    if (phoneIndex === -1) {
+                        addLog("CSV Error: File must have a 'phone' column header.", "error"); return;
+                    }
+
+                    const numbersFromCsv = rows.slice(1).map(row => {
+                        // Handle potential quotes and extra whitespace around numbers
+                        const columns = row.split(',');
+                        return columns[phoneIndex]?.trim().replace(/^"|"$/g, '') || '';
+                    }).filter(Boolean);
+
+                    let addedCount = 0;
+                    let invalidCount = 0;
+                    numbersFromCsv.forEach(num => {
+                        let cleanNum = num.replace(/\D/g, ''); // Remove non-digits first
+                        let formattedNum = num.startsWith('+') ? num : `+${num}`; // Add '+' if missing AFTER cleaning other chars potentially
+
+                        // Re-validate using robust E.164
+                        if (/^\+[1-9]\d{1,14}$/.test(formattedNum)) {
+                            if (!campaign.contacts.has(formattedNum)) {
+                                campaign.contacts.add(formattedNum);
+                                addedCount++;
+                            }
+                        } else {
+                            invalidCount++;
+                        }
+                    });
+                    renderContacts();
+                    updateCostEstimator();
+                    let logMessage = `Loaded from CSV: Added ${addedCount} new unique numbers.`;
+                    if (invalidCount > 0) {
+                        logMessage += ` Skipped ${invalidCount} invalid numbers.`;
+                        addLog(logMessage, "warning");
+                    } else {
+                        addLog(logMessage, "success");
+                    }
+                } catch (csvError) {
+                    addLog(`Error processing CSV: ${csvError.message}`, "error");
+                } finally {
+                    // Clear the file input so the same file can be re-uploaded if needed
+                    event.target.value = null;
+                    DOMElements.fileInfo.textContent = "Upload a CSV with a 'phone' column."; // Reset file info text
+                }
+            };
+            reader.onerror = () => {
+                addLog("Error reading the CSV file.", "error");
+                event.target.value = null;
+                DOMElements.fileInfo.textContent = "Upload a CSV with a 'phone' column.";
             };
             reader.readAsText(file);
         }
@@ -662,8 +750,9 @@
         }
         function renderContacts() {
             DOMElements.contactsList.innerHTML = '';
-            DOMElements.contactCount.textContent = campaign.contacts.size;
-            if (campaign.contacts.size === 0) {
+            const count = campaign.contacts.size;
+            DOMElements.contactCount.textContent = count;
+            if (count === 0) {
                 DOMElements.contactsList.innerHTML = `<p class="text-sm text-gray-500 dark:text-gray-400 p-2 text-center">No contacts added yet.</p>`;
             } else {
                 campaign.contacts.forEach(number => {
@@ -671,9 +760,12 @@
                     pill.className = 'flex items-center justify-between bg-indigo-100 dark:bg-indigo-900 text-indigo-800 dark:text-indigo-200 text-sm font-medium px-3 py-1.5 rounded-full';
                     pill.innerHTML = `
                         <span>${number}</span>
-                        <button class="ml-2 text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 focus-ring rounded-full w-5 h-5 flex items-center justify-center">&times;</button>
-                    `;
-                    pill.querySelector('button').onclick = () => removeContact(number);
+                        <button class="ml-2 text-indigo-500 hover:text-indigo-700 dark:hover:text-indigo-300 focus-ring rounded-full w-5 h-5 flex items-center justify-center flex-shrink-0" title="Remove ${number}">&times;</button>
+                    `; // Added title for accessibility
+                    pill.querySelector('button').onclick = (e) => {
+                        e.stopPropagation(); // Prevent potential parent clicks
+                        removeContact(number);
+                    };
                     DOMElements.contactsList.appendChild(pill);
                 });
             }
@@ -681,18 +773,41 @@
 
         // --- Media & Cloudinary Logic ---
         async function startRecording() {
+            // Check for MediaRecorder support
+            if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia || !window.MediaRecorder) {
+                addLog("Audio recording is not supported in this browser.", "error");
+                return;
+            }
             try {
                 const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-                mediaRecorder = new MediaRecorder(stream);
+                // Use a more specific MIME type if available, fallback to default
+                const options = { mimeType: 'audio/webm;codecs=opus' };
+                if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                    console.warn(`${options.mimeType} not supported, trying default.`);
+                    delete options.mimeType; // Use browser default
+                }
+                mediaRecorder = new MediaRecorder(stream, options);
+
                 audioChunks = [];
                 mediaRecorder.ondataavailable = event => {
-                    audioChunks.push(event.data);
+                    if (event.data.size > 0) {
+                        audioChunks.push(event.data);
+                    }
                 };
                 mediaRecorder.onstop = () => {
-                    const audioBlob = new Blob(audioChunks, { type: 'audio/wav' });
-                    const audioFile = new File([audioBlob], `recording-${new Date().toISOString()}.wav`, { type: 'audio/wav' });
-                    uploadAudioToCloudinary(audioFile);
+                    // Determine file extension based on MIME type used
+                    const mimeType = mediaRecorder.mimeType || 'audio/wav'; // Default if somehow unknown
+                    const fileExtension = mimeType.includes('webm') ? 'webm' : 'wav';
+                    const audioBlob = new Blob(audioChunks, { type: mimeType });
+                    const audioFile = new File([audioBlob], `recording-${new Date().toISOString()}.${fileExtension}`, { type: mimeType });
+                    uploadMediaToCloudinary(audioFile, 'audio');
                     addLog("Recording finished. Uploading...", "info");
+                    // Clean up stream tracks
+                    stream.getTracks().forEach(track => track.stop());
+                };
+                mediaRecorder.onerror = (event) => {
+                    addLog(`Recording Error: ${event.error.message}`, "error");
+                    stopRecording(); // Try to cleanup state on error
                 };
                 mediaRecorder.start();
                 DOMElements.recordButton.disabled = true;
@@ -700,23 +815,32 @@
                 DOMElements.audioFilePicker.disabled = true;
                 startRecordTimer();
 
-                // *** ADDED: Auto-stop after 30 seconds ***
                 recordTimeout = setTimeout(() => {
                     addLog("Recording automatically stopping after 30 seconds.", "warning");
                     stopRecording();
-                }, 30000); // 30,000 milliseconds = 30 seconds
+                }, 30000);
 
                 addLog("Recording started... (max 30 seconds)", "info");
             } catch (err) {
-                addLog("Error starting recording: " + err.message, "error");
+                // Handle specific permission errors
+                if (err.name === 'NotAllowedError' || err.name === 'PermissionDeniedError') {
+                    addLog("Microphone access denied. Please allow microphone permissions in your browser settings.", "error");
+                } else if (err.name === 'NotFoundError' || err.name === 'DevicesNotFoundError') {
+                    addLog("No microphone found. Please connect a microphone.", "error");
+                } else {
+                    addLog("Error starting recording: " + err.message, "error");
+                }
+                DOMElements.recordButton.disabled = false;
+                DOMElements.stopRecordButton.disabled = true;
+                DOMElements.audioFilePicker.disabled = false;
             }
         }
 
         function stopRecording() {
-            if (mediaRecorder && mediaRecorder.state !== 'inactive') {
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
                 mediaRecorder.stop();
             }
-            // Clear the 30-second timeout if stop is pressed manually
+            // Stream tracks are stopped in mediaRecorder.onstop
             if (recordTimeout) {
                 clearTimeout(recordTimeout);
                 recordTimeout = null;
@@ -732,8 +856,8 @@
             DOMElements.recordTimer.textContent = '00:00';
             recordTimerInterval = setInterval(() => {
                 seconds++;
-                // *** ADDED: Check for 30 second limit in timer display ***
                 if (seconds > 30) {
+                    DOMElements.recordTimer.textContent = '00:30';
                     stopRecordTimer();
                     return;
                 }
@@ -744,36 +868,71 @@
         }
 
         function stopRecordTimer() {
-            clearInterval(recordTimerInterval);
+            if (recordTimerInterval) {
+                clearInterval(recordTimerInterval);
+                recordTimerInterval = null; // Clear interval ID
+            }
         }
 
-        async function uploadAudioToCloudinary(file) {
-            // 1. Show loading indicator
-            DOMElements.uploadStatus.classList.remove('hidden');
-            DOMElements.uploadStatus.classList.add('flex');
-            DOMElements.uploadStatusText.textContent = `Uploading ${file.name}...`;
-            DOMElements.audioUrlInput.value = ''; // Clear old URL
+        // --- Generalized Media Upload Function ---
+        async function uploadMediaToCloudinary(file, type) {
+            let statusEl, statusTextEl, urlInputEl, previewEl, filePickerEl;
+
+            if (type === 'audio') {
+                statusEl = DOMElements.audioUploadStatus;
+                statusTextEl = DOMElements.audioUploadStatusText;
+                urlInputEl = DOMElements.audioUrlInput;
+                previewEl = DOMElements.audioPreview;
+                filePickerEl = DOMElements.audioFilePicker;
+                statusTextEl.textContent = `Uploading audio ${file.name}...`;
+            } else if (type === 'image') {
+                statusEl = DOMElements.imageUploadStatus;
+                statusTextEl = DOMElements.imageUploadStatusText;
+                urlInputEl = DOMElements.imageUrlInput;
+                previewEl = DOMElements.imagePreview;
+                filePickerEl = DOMElements.imageFilePicker;
+                statusTextEl.textContent = `Uploading image ${file.name}...`;
+
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    previewEl.src = e.target.result;
+                    previewEl.classList.remove('hidden');
+                }
+                reader.onerror = () => { // Handle preview loading error
+                    addLog("Error loading image preview.", "error");
+                }
+                reader.readAsDataURL(file);
+            } else {
+                console.error("Invalid type provided to uploadMediaToCloudinary");
+                return;
+            }
+
+            statusEl.classList.remove('hidden');
+            statusEl.classList.add('flex');
+            urlInputEl.value = '';
+            filePickerEl.disabled = true; // Disable picker during upload
 
             try {
-                // 2. Get secure signature from our backend
-                const signResponse = await fetch(API_ENDPOINT_SIGN);
+                const signResponse = await fetch(`${API_ENDPOINT_SIGN}?type=${type}`);
                 if (!signResponse.ok) {
-                    const err = await signResponse.json();
-                    throw new Error(err.error || 'Could not get upload signature from server.');
+                    let errorMsg = 'Could not get upload signature from server.';
+                    try { // Try to parse JSON error from backend
+                        const errJson = await signResponse.json();
+                        errorMsg = errJson.error || errorMsg;
+                    } catch (_) { /* Ignore parsing error, use default message */ }
+                    throw new Error(errorMsg);
                 }
                 const signData = await signResponse.json();
 
-                // 3. Prepare form data to send to Cloudinary
                 const formData = new FormData();
                 formData.append('file', file);
                 formData.append('api_key', signData.apiKey);
                 formData.append('timestamp', signData.timestamp);
                 formData.append('signature', signData.signature);
-                formData.append('folder', 'twilio_audio'); // Matches folder in server.js
+                formData.append('folder', signData.folder); // Use folder from backend response
 
-                // 4. Upload file directly to Cloudinary
-                //    We use "video/upload" as it's the endpoint for large files, including audio
-                const uploadUrl = `https://api.cloudinary.com/v1_1/${signData.cloudName}/video/upload`;
+                const resourceType = type === 'image' ? 'image' : 'video';
+                const uploadUrl = `https://api.cloudinary.com/v1_1/${signData.cloudName}/${resourceType}/upload`;
 
                 const uploadResponse = await fetch(uploadUrl, {
                     method: 'POST',
@@ -781,26 +940,40 @@
                 });
 
                 if (!uploadResponse.ok) {
-                    const err = await uploadResponse.json();
-                    throw new Error(err.error?.message || 'Cloudinary upload failed.');
+                    let errorMsg = 'Cloudinary upload failed.';
+                    try { // Try to parse JSON error from Cloudinary
+                        const errJson = await uploadResponse.json();
+                        errorMsg = errJson.error?.message || errorMsg;
+                    } catch (_) { /* Ignore parsing error */ }
+                    throw new Error(errorMsg);
                 }
                 const uploadData = await uploadResponse.json();
 
-                // 5. Success! Auto-fill the URL
                 const publicUrl = uploadData.secure_url;
-                DOMElements.audioUrlInput.value = publicUrl; // AUTO-FETCH
-                DOMElements.audioPreview.src = publicUrl; // Set preview player
-                addLog("Audio successfully uploaded.", "success");
-                DOMElements.uploadStatusText.textContent = "Upload complete!";
-                setTimeout(() => { // Hide status after a short delay
-                    DOMElements.uploadStatus.classList.add('hidden');
+                urlInputEl.value = publicUrl;
+
+                if (type === 'audio') {
+                    previewEl.src = publicUrl;
+                }
+
+                addLog(`${type.charAt(0).toUpperCase() + type.slice(1)} successfully uploaded.`, "success");
+                statusTextEl.textContent = "Upload complete!";
+                setTimeout(() => {
+                    statusEl.classList.add('hidden');
                 }, 2000);
 
             } catch (error) {
                 console.error("Upload failed:", error);
-                addLog(`Upload Failed: ${error.message}`, "error");
-                DOMElements.uploadStatusText.textContent = `Upload failed: ${error.message}`;
-                // Do not hide the status on failure, so the user sees it
+                addLog(`Upload Failed (${type}): ${error.message}`, "error");
+                statusTextEl.textContent = `Upload failed.`; // Keep it concise for UI
+                if (type === 'image') {
+                    previewEl.classList.add('hidden');
+                    previewEl.src = '';
+                }
+                // Do NOT hide status on failure
+            } finally {
+                filePickerEl.disabled = false; // Re-enable picker
+                filePickerEl.value = null; // Clear file input
             }
         }
 
@@ -810,112 +983,148 @@
             if (!validateInputs()) return;
             const contactCount = campaign.contacts.size;
             const estimatedCost = calculateCost(contactCount);
-            // Use a simple confirm dialog
-            if (window.confirm(`This campaign will be sent to ${contactCount} numbers.\nEstimated cost: ₹${estimatedCost.toFixed(2)}.\n\nProceed?`)) {
+            // Using a custom modal might be better, but window.confirm is simple
+            if (window.confirm(`Start campaign for ${contactCount} contacts?\nEstimated cost: ₹${estimatedCost.toFixed(2)}.\n\nProceed?`)) {
                 startCampaign();
             }
         }
 
         function validateInputs() {
             if (campaign.contacts.size === 0) {
-                addLog("Validation Error: No contacts have been added.", "error");
-                document.getElementById('contacts-list-container').classList.add('shake');
-                setTimeout(() => document.getElementById('contacts-list-container').classList.remove('shake'), 500);
+                addLog("Validation Error: No contacts added.", "error");
+                DOMElements.contactsListContainer.classList.add('shake');
+                setTimeout(() => DOMElements.contactsListContainer.classList.remove('shake'), 500);
                 return false;
             }
 
             const channel = DOMElements.channelSelect.value;
             if (channel === 'call') {
                 const callType = document.querySelector('input[name="call-type"]:checked').value;
-                if (callType === 'tts') {
-                    if (!DOMElements.messageTTSTextarea.value.trim()) {
-                        addLog("Validation Error: Message to Speak cannot be empty.", "error");
-                        DOMElements.messageTTSTextarea.classList.add('shake');
-                        setTimeout(() => DOMElements.messageTTSTextarea.classList.remove('shake'), 500);
-                        return false;
-                    }
-                } else if (callType === 'audio') {
-                    if (!DOMElements.audioUrlInput.value.trim()) {
-                        addLog("Validation Error: Public Audio URL is empty. Please upload a file first.", "error");
-                        DOMElements.audioUrlInput.classList.add('shake');
-                        setTimeout(() => DOMElements.audioUrlInput.classList.remove('shake'), 500);
-                        return false;
-                    }
+                if (callType === 'tts' && !DOMElements.messageTTSTextarea.value.trim()) {
+                    addLog("Validation Error: TTS message required.", "error");
+                    DOMElements.messageTTSTextarea.focus(); // Focus the field
+                    DOMElements.messageTTSTextarea.classList.add('shake');
+                    setTimeout(() => DOMElements.messageTTSTextarea.classList.remove('shake'), 500);
+                    return false;
+                } else if (callType === 'audio' && !DOMElements.audioUrlInput.value.trim()) {
+                    addLog("Validation Error: Audio URL required. Upload or record first.", "error");
+                    DOMElements.audioFilePicker.focus(); // Focus the general area
+                    DOMElements.audioContainer.classList.add('shake');
+                    setTimeout(() => DOMElements.audioContainer.classList.remove('shake'), 500);
+                    return false;
                 }
             } else { // SMS or WhatsApp
                 if (!DOMElements.messageTextarea.value.trim() && !DOMElements.imageUrlInput.value.trim()) {
-                    addLog("Validation Error: Message or Image URL cannot be empty.", "error");
+                    addLog("Validation Error: Message or Image required.", "error");
+                    DOMElements.messageTextarea.focus();
                     DOMElements.messageTextarea.classList.add('shake');
-                    setTimeout(() => DOMElements.messageTextarea.classList.remove('shake'), 500);
+                    DOMElements.imageFilePicker.parentElement.classList.add('shake');
+                    setTimeout(() => {
+                        DOMElements.messageTextarea.classList.remove('shake');
+                        DOMElements.imageFilePicker.parentElement.classList.remove('shake');
+                    }, 500);
                     return false;
                 }
             }
-            return true;
+            return true; // All checks passed
         }
 
         function startCampaign() {
-            resetCampaignState();
+            resetCampaignState(); // Ensure clean state before starting
             const numbersArray = Array.from(campaign.contacts);
+            if (numbersArray.length === 0) return; // Should be caught by validation, but double-check
+
             campaign.state = 'running';
             campaign.totalCount = numbersArray.length;
-            updateUIForCampaignStart();
-            addLog(`Starting campaign for ${campaign.totalCount} numbers via ${DOMElements.channelSelect.value.toUpperCase()}.`);
+            updateUIForCampaignStart(); // Disables inputs, enables controls
+            addLog(`Starting campaign: ${campaign.totalCount} messages via ${DOMElements.channelSelect.value.toUpperCase()}.`);
+
+            // Start sending the first message immediately
             sendNextMessage(numbersArray);
         }
 
         async function sendNextMessage(numbers) {
-            if (campaign.currentIndex >= campaign.totalCount || campaign.state !== 'running') {
-                if (campaign.state === 'running') finishCampaign();
+            // Check state before proceeding
+            if (campaign.state !== 'running') {
+                console.log("sendNextMessage called but campaign state is not 'running'. Finishing.");
+                // Ensure campaign finishes if stopped/paused during async operation
+                if (campaign.currentIndex >= campaign.totalCount && campaign.state !== 'finished' && campaign.state !== 'stopped') {
+                    finishCampaign();
+                }
+                return;
+            }
+            if (campaign.currentIndex >= campaign.totalCount) {
+                finishCampaign(); // All messages processed
                 return;
             }
 
             const number = numbers[campaign.currentIndex];
             const channel = DOMElements.channelSelect.value;
 
-            // --- Build Payload ---
-            const payload = {
-                channel,
-                recipient: number
-            };
+            const payload = { channel, recipient: number };
 
             if (channel === 'call') {
                 const callType = document.querySelector('input[name="call-type"]:checked').value;
-                payload.callType = callType; // 'tts' or 'audio'
-                if (callType === 'tts') {
-                    payload.message = DOMElements.messageTTSTextarea.value;
-                } else {
-                    payload.audioUrl = DOMElements.audioUrlInput.value.trim();
-                }
-            } else { // SMS or WhatsApp
+                payload.callType = callType;
+                if (callType === 'tts') payload.message = DOMElements.messageTTSTextarea.value;
+                else payload.audioUrl = DOMElements.audioUrlInput.value.trim();
+            } else {
                 const message = DOMElements.messageTextarea.value;
                 const imageUrl = DOMElements.imageUrlInput.value.trim();
                 if (message) payload.message = message;
                 if (imageUrl) payload.imageUrl = imageUrl;
             }
-            // --- End Build Payload ---
+
+            let success = false;
+            let sid = null;
+            let errorMessage = 'Unknown error';
 
             try {
-                const response = await fetch(API_ENDPOINT_SEND, { // Use correct endpoint
+                const response = await fetch(API_ENDPOINT_SEND, {
                     method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
+                    headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' }, // Added Accept header
                     body: JSON.stringify(payload),
                 });
-                const result = await response.json();
-                if (!response.ok) {
-                    const err = result.error || `HTTP error! status: ${response.status}`;
-                    throw new Error(err);
+
+                // Check for non-JSON responses (like HTML error pages)
+                const contentType = response.headers.get("content-type");
+                if (!contentType || !contentType.includes("application/json")) {
+                    errorMessage = `Server returned non-JSON response (Status: ${response.status})`;
+                    console.error(errorMessage, await response.text()); // Log the raw response
+                    throw new Error(errorMessage);
                 }
-                campaign.sentCount++;
-                addLog(`Success: ${number} (SID: ${result.sid})`, 'success');
+
+                const result = await response.json();
+
+                if (!response.ok) {
+                    errorMessage = result.error || `HTTP error! Status: ${response.status}`;
+                    throw new Error(errorMessage);
+                }
+
+                success = true;
+                sid = result.sid;
+                campaign.sentCount++; // Increment only on success
+                addLog(`Success: ${number} (SID: ${sid})`, 'success');
+
             } catch (error) {
-                addLog(`Failed: ${number} (${error.message})`, 'error');
+                errorMessage = error.message; // Use the caught error message
+                console.error(`Error sending to ${number}:`, error); // Log the full error object
+                addLog(`Failed: ${number} (${errorMessage})`, 'error');
                 campaign.failedNumbers.push(number);
                 updateFailuresTab();
             } finally {
+                // Always advance index and update progress, regardless of success/fail
                 campaign.currentIndex++;
                 updateProgress();
-                const delay = parseInt(DOMElements.delaySlider.value, 10);
-                campaign.timeoutId = setTimeout(() => sendNextMessage(numbers), delay);
+
+                // Schedule next message only if campaign is still running
+                if (campaign.state === 'running' && campaign.currentIndex < campaign.totalCount) {
+                    const delay = parseInt(DOMElements.delaySlider.value, 10);
+                    campaign.timeoutId = setTimeout(() => sendNextMessage(numbers), delay);
+                } else if (campaign.state === 'running' && campaign.currentIndex >= campaign.totalCount) {
+                    // If this was the last message, finish the campaign
+                    finishCampaign();
+                }
             }
         }
 
@@ -923,7 +1132,8 @@
         function togglePauseResume() {
             if (campaign.state === 'running') {
                 campaign.state = 'paused';
-                clearTimeout(campaign.timeoutId);
+                if (campaign.timeoutId) clearTimeout(campaign.timeoutId); // Clear scheduled next message
+                campaign.timeoutId = null;
                 updateUIForPause();
                 addLog('Campaign paused.', 'warning');
             } else if (campaign.state === 'paused') {
@@ -931,22 +1141,35 @@
                 updateUIForResume();
                 addLog('Campaign resumed.');
                 const numbersArray = Array.from(campaign.contacts);
+                // Immediately attempt to send the *next* message in sequence
                 sendNextMessage(numbersArray);
             }
         }
         function stopCampaign() {
             if (campaign.state === 'running' || campaign.state === 'paused') {
-                campaign.state = 'stopped';
-                clearTimeout(campaign.timeoutId);
-                addLog('Campaign stopped by user.', 'error');
-                finishCampaign();
+                const previousState = campaign.state;
+                campaign.state = 'stopped'; // Set state immediately
+                if (campaign.timeoutId) clearTimeout(campaign.timeoutId);
+                campaign.timeoutId = null;
+
+                if (previousState === 'running' || previousState === 'paused') {
+                    addLog('Campaign stopped by user.', 'error');
+                }
+                finishCampaign(); // Finalize UI updates etc.
             }
         }
         function finishCampaign() {
-            const finalState = campaign.state === 'stopped' ? 'stopped' : 'finished';
-            campaign.state = finalState;
-            addLog(`Campaign ${finalState}. Processed ${campaign.currentIndex} of ${campaign.totalCount}. Success: ${campaign.sentCount}, Failures: ${campaign.failedNumbers.length}.`, 'info');
-            updateUIForCampaignEnd();
+            // Only proceed if not already finished/stopped
+            if (campaign.state === 'finished' || campaign.state === 'stopped') {
+                // Determine the final state message
+                const finalStateMsg = campaign.state;
+                if (campaign.state !== 'stopped') { // If naturally finished
+                    campaign.state = 'finished';
+                }
+                addLog(`Campaign ${finalStateMsg}. Processed ${campaign.currentIndex} of ${campaign.totalCount}. Success: ${campaign.sentCount}, Failures: ${campaign.failedNumbers.length}.`, 'info');
+                updateUIForCampaignEnd();
+
+            }
         }
         function updateUIForCampaignStart() {
             DOMElements.statusMessage.textContent = 'Running...';
@@ -957,12 +1180,27 @@
             DOMElements.failedNumbersTextarea.value = '';
             DOMElements.failureCount.textContent = '0';
 
-            // Disable all inputs
-            [DOMElements.sendButton, DOMElements.channelSelect, DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.addNumberBtn, DOMElements.csvFileInput, DOMElements.messageTTSTextarea, DOMElements.audioUrlInput, DOMElements.audioFilePicker, DOMElements.recordButton, DOMElements.callTypeTTS, DOMElements.callTypeAudio].forEach(el => el.disabled = true);
+            const elementsToDisable = [
+                DOMElements.sendButton, DOMElements.channelSelect,
+                DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.imageFilePicker,
+                DOMElements.addNumberBtn, DOMElements.csvFileInput,
+                DOMElements.messageTTSTextarea, DOMElements.audioUrlInput, DOMElements.audioFilePicker,
+                DOMElements.recordButton, DOMElements.stopRecordButton,
+                DOMElements.callTypeTTS, DOMElements.callTypeAudio,
+                DOMElements.countryCodeInput, DOMElements.phoneNumberInput,
+                DOMElements.delaySlider // Also disable slider during run
+            ];
+            elementsToDisable.forEach(el => { if (el) el.disabled = true; });
 
-            // Enable controls
+            DOMElements.contactsList.querySelectorAll('button').forEach(btn => btn.disabled = true);
+
             DOMElements.pauseResumeButton.disabled = false;
             DOMElements.stopButton.disabled = false;
+
+            // Reset pause button to initial state
+            DOMElements.pauseResumeButton.querySelector('span').textContent = 'Pause';
+            DOMElements.pauseResumeButton.classList.remove('bg-green-500', 'hover:bg-green-600');
+            DOMElements.pauseResumeButton.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
         }
         function updateUIForPause() {
             DOMElements.pauseResumeButton.querySelector('span').textContent = 'Resume';
@@ -979,25 +1217,53 @@
         function updateUIForCampaignEnd() {
             DOMElements.statusMessage.textContent = campaign.state === 'stopped' ? 'Stopped' : 'Finished';
 
-            // Re-enable all inputs
-            [DOMElements.sendButton, DOMElements.channelSelect, DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.addNumberBtn, DOMElements.csvFileInput, DOMElements.messageTTSTextarea, DOMElements.audioUrlInput, DOMElements.audioFilePicker, DOMElements.recordButton, DOMElements.callTypeTTS, DOMElements.callTypeAudio].forEach(el => el.disabled = false);
+            const elementsToEnable = [
+                DOMElements.sendButton, DOMElements.channelSelect,
+                DOMElements.messageTextarea, DOMElements.imageUrlInput, DOMElements.imageFilePicker,
+                DOMElements.addNumberBtn, DOMElements.csvFileInput,
+                DOMElements.messageTTSTextarea, DOMElements.audioUrlInput, DOMElements.audioFilePicker,
+                DOMElements.recordButton,
+                // Stop button remains disabled until recording starts
+                DOMElements.callTypeTTS, DOMElements.callTypeAudio,
+                DOMElements.countryCodeInput, DOMElements.phoneNumberInput,
+                DOMElements.delaySlider // Re-enable slider
+            ];
+            elementsToEnable.forEach(el => { if (el) el.disabled = false; });
 
-            // Disable controls
+            DOMElements.stopRecordButton.disabled = true; // Ensure stop recording is disabled initially
+
+            DOMElements.contactsList.querySelectorAll('button').forEach(btn => btn.disabled = false);
+
             DOMElements.pauseResumeButton.disabled = true;
             DOMElements.stopButton.disabled = true;
-            updateUIForResume(); // Reset pause button appearance
+            // Reset pause button visual state
+            DOMElements.pauseResumeButton.querySelector('span').textContent = 'Pause';
+            DOMElements.pauseResumeButton.classList.remove('bg-green-500', 'hover:bg-green-600');
+            DOMElements.pauseResumeButton.classList.add('bg-yellow-500', 'hover:bg-yellow-600');
         }
         function resetCampaignState() {
             if (campaign.timeoutId) clearTimeout(campaign.timeoutId);
+            if (mediaRecorder && mediaRecorder.state === 'recording') {
+                stopRecording(); // Properly stop recording if interrupted
+            }
             campaign.state = 'idle';
             campaign.failedNumbers = [];
             campaign.currentIndex = 0;
             campaign.sentCount = 0;
+            campaign.totalCount = 0; // Reset total count as well
             campaign.timeoutId = null;
+
+            // Also reset UI elements related to a running campaign state
+            updateProgress(); // Reset progress bar and counts
+            DOMElements.statusMessage.textContent = 'Idle. Configure a campaign to begin.';
+            updateUIForCampaignEnd(); // Re-enable inputs, disable controls
         }
         function updateProgress() {
-            DOMElements.sentCountEl.textContent = campaign.currentIndex;
-            const progress = campaign.totalCount > 0 ? (campaign.currentIndex / campaign.totalCount) * 100 : 0;
+            const currentDisplay = Math.min(campaign.currentIndex, campaign.totalCount);
+            const totalDisplay = campaign.totalCount; // Use the stored total count
+            DOMElements.sentCountEl.textContent = currentDisplay;
+            DOMElements.totalCountEl.textContent = totalDisplay; // Update total count display too
+            const progress = totalDisplay > 0 ? (currentDisplay / totalDisplay) * 100 : 0;
             DOMElements.progressBar.style.width = `${progress}%`;
         }
         function updateFailuresTab() {
@@ -1023,20 +1289,18 @@
                 DOMElements.smsWhatsappOptions.classList.add('hidden');
                 DOMElements.voiceCallOptions.classList.remove('hidden');
 
+                // Ensure correct sub-options are shown based on radio selection
                 const callType = document.querySelector('input[name="call-type"]:checked').value;
                 if (callType === 'tts') {
                     DOMElements.ttsContainer.classList.remove('hidden');
                     DOMElements.audioContainer.classList.add('hidden');
-                } else { // 'audio'
+                } else {
                     DOMElements.ttsContainer.classList.add('hidden');
                     DOMElements.audioContainer.classList.remove('hidden');
                 }
-            } else {
-                // This is SMS or WhatsApp
+            } else { // SMS or WhatsApp
                 DOMElements.smsWhatsappOptions.classList.remove('hidden');
                 DOMElements.voiceCallOptions.classList.add('hidden');
-                // The image URL input is inside the smsWhatsappOptions container,
-                // so it will be shown/hidden correctly with its parent.
             }
         }
 
@@ -1046,28 +1310,43 @@
                 error: 'text-red-500 dark:text-red-400',
                 success: 'text-green-600 dark:text-green-400',
                 warning: 'text-yellow-500 dark:text-yellow-400',
+                info: 'text-gray-600 dark:text-gray-300'
             };
-            p.className = `text-sm ${typeClasses[type] || 'text-gray-600 dark:text-gray-300'} break-words`;
-            p.innerHTML = `<span class="font-mono text-xs mr-2 opacity-70">[${new Date().toLocaleTimeString()}]</span> ${message}`;
+            p.className = `text-sm ${typeClasses[type] || typeClasses['info']} break-words`;
+            // Sanitize message slightly before inserting (basic protection)
+            const sanitizedMessage = message.replace(/</g, "&lt;").replace(/>/g, "&gt;");
+            p.innerHTML = `<span class="font-mono text-xs mr-2 opacity-70">[${new Date().toLocaleTimeString()}]</span> ${sanitizedMessage}`;
             DOMElements.logsContainer.prepend(p);
         }
         function switchTab(tab) {
             const activeClasses = ['border-indigo-500', 'text-indigo-600', 'dark:text-indigo-400'];
-            const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300'];
+            // Combine all possible inactive classes
+            const inactiveClasses = ['border-transparent', 'text-gray-500', 'hover:text-gray-700', 'hover:border-gray-300', 'dark:text-gray-400', 'dark:hover:text-gray-200'];
+
+            const logsTab = DOMElements.tabLogs;
+            const failuresTab = DOMElements.tabFailures;
+            const logsContent = DOMElements.tabContentLogs;
+            const failuresContent = DOMElements.tabContentFailures;
+
+            // Reset both tabs to inactive state first
+            logsTab.classList.remove(...activeClasses);
+            logsTab.classList.add(...inactiveClasses);
+            failuresTab.classList.remove(...activeClasses);
+            failuresTab.classList.add(...inactiveClasses);
+
+            // Hide both content areas
+            logsContent.classList.add('hidden');
+            failuresContent.classList.add('hidden');
+
+            // Apply active state to the selected tab and content
             if (tab === 'logs') {
-                DOMElements.tabContentLogs.classList.remove('hidden');
-                DOMElements.tabContentFailures.classList.add('hidden');
-                DOMElements.tabLogs.classList.add(...activeClasses);
-                DOMElements.tabLogs.classList.remove(...inactiveClasses);
-                DOMElements.tabFailures.classList.remove(...activeClasses);
-                DOMElements.tabFailures.classList.add(...inactiveClasses);
+                logsContent.classList.remove('hidden');
+                logsTab.classList.add(...activeClasses);
+                logsTab.classList.remove(...inactiveClasses.filter(cls => !activeClasses.includes(cls))); // Ensure only inactive classes are removed
             } else {
-                DOMElements.tabContentLogs.classList.add('hidden');
-                DOMElements.tabContentFailures.classList.remove('hidden');
-                DOMElements.tabFailures.classList.add(...activeClasses);
-                DOMElements.tabFailures.classList.remove(...inactiveClasses);
-                DOMElements.tabLogs.classList.remove(...activeClasses);
-                DOMElements.tabLogs.classList.add(...inactiveClasses);
+                failuresContent.classList.remove('hidden');
+                failuresTab.classList.add(...activeClasses);
+                failuresTab.classList.remove(...inactiveClasses.filter(cls => !activeClasses.includes(cls)));
             }
         }
         function initializeTheme() {
@@ -1079,7 +1358,7 @@
         function toggleTheme() {
             const isDark = document.documentElement.classList.toggle('dark');
             localStorage.theme = isDark ? 'dark' : 'light';
-            initializeTheme();
+            initializeTheme(); // Re-apply classes based on new state
         }
 
         // --- Start the App ---
