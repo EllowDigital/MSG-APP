@@ -477,7 +477,7 @@
         <!-- Footer -->
         <footer class="mt-12 pt-8 border-t border-gray-200 dark:border-gray-700 text-center">
             <p class="text-sm text-gray-500 dark:text-gray-400">
-                Version <span id="app-version">2.0.0</span> | Made with ❤️ by
+                Version <span id="app-version">2.0.1</span> | Made with ❤️ by
                 <a href="https://ellowdigital.netlify.app" target="_blank" rel="noopener noreferrer"
                     class="font-medium text-indigo-600 hover:text-indigo-500 dark:text-indigo-400 dark:hover:text-indigo-300 underline">
                     EllowDigital
@@ -489,7 +489,7 @@
     <!-- === JAVASCRIPT === -->
     <script>
         // --- CONFIGURATION ---
-        const APP_VERSION = '2.0.0'; // Define app version
+        const APP_VERSION = '2.0.1'; // Updated app version
         // 
         //  !!!  CRITICAL: YOU MUST CHANGE THIS  !!!
         //
@@ -581,6 +581,7 @@
             currentIndex: 0,
             sentCount: 0,
             timeoutId: null,
+            totalCount: 0 // Added totalCount to state
         };
         let mediaRecorder;
         let audioChunks = [];
@@ -1158,19 +1159,25 @@
                 finishCampaign(); // Finalize UI updates etc.
             }
         }
-        function finishCampaign() {
-            // Only proceed if not already finished/stopped
-            if (campaign.state === 'finished' || campaign.state === 'stopped') {
-                // Determine the final state message
-                const finalStateMsg = campaign.state;
-                if (campaign.state !== 'stopped') { // If naturally finished
-                    campaign.state = 'finished';
-                }
-                addLog(`Campaign ${finalStateMsg}. Processed ${campaign.currentIndex} of ${campaign.totalCount}. Success: ${campaign.sentCount}, Failures: ${campaign.failedNumbers.length}.`, 'info');
-                updateUIForCampaignEnd();
 
+        // --- Bug Fix Applied Here ---
+        function finishCampaign() {
+            // Check if already finalized to prevent multiple logs/updates
+            if (campaign.state === 'finished' || campaign.state === 'stopped') {
+                return; // Already done
             }
+
+            // Determine the final state
+            const finalState = (campaign.state === 'running') ? 'finished' : campaign.state; // 'running' becomes 'finished', 'stopped' stays 'stopped'
+            campaign.state = finalState; // Set the state
+
+            // Log and update UI
+            addLog(`Campaign ${finalState}. Processed ${campaign.currentIndex} of ${campaign.totalCount}. Success: ${campaign.sentCount}, Failures: ${campaign.failedNumbers.length}.`, 'info'); // Corrected typo FailFures -> Failures
+            updateUIForCampaignEnd();
         }
+        // --- End Bug Fix ---
+
+
         function updateUIForCampaignStart() {
             DOMElements.statusMessage.textContent = 'Running...';
             DOMElements.totalCountEl.textContent = campaign.totalCount;

@@ -1,6 +1,6 @@
 {
   "name": "messaging-app",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "description": "An advanced bulk messaging application with rate limiting and advanced controls.",
   "main": "server.js",
   "scripts": {
