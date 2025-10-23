@@ -21,6 +21,7 @@ if (!frontendUrl) {
 }
 const corsOptions = {
     // This MUST match your Netlify URL in your Render Environment Variables
+    // It will read 'https://rgsk.netlify.app/' from the FRONTEND_URL variable.
     origin: frontendUrl || "http://127.0.0.1:5500", // Fallback for local dev
 };
 app.use(cors(corsOptions));
@@ -70,9 +71,8 @@ cloudinary.config({
 app.get('/api/sign-upload', limiter, (req, res) => {
     try {
         const timestamp = Math.round((new Date).getTime() / 1000);
-
+        
         // This creates a secure signature for the upload
-        // It's valid for 10 minutes (600 seconds)
         const signature = cloudinary.utils.api_sign_request(
             {
                 timestamp: timestamp,
@@ -159,7 +159,7 @@ app.post('/send', limiter, async (req, res) => {
                 if (imageUrl) {
                     return res.status(400).json({ error: 'Cannot send an image with a voice call.' });
                 }
-
+                
                 const twiml = new twilio.twiml.VoiceResponse();
 
                 // Dynamic logic for voice calls
@@ -170,7 +170,7 @@ app.post('/send', limiter, async (req, res) => {
                     // This is your original Text-to-Speech (TTS) logic
                     twiml.say({ voice: 'Polly.Aditi' }, message); // Indian Polly voice
                 }
-
+                
                 twiml.hangup();
                 messageOptions.twiml = twiml.toString();
                 result = await client.calls.create(messageOptions);
